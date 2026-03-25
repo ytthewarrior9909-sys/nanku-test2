@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Playfair_Display, Lato, Montserrat } from 'next/font/google'
 import './globals.css'
+import FadeUpObserver from '@/components/FadeUpObserver'
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
@@ -58,7 +59,10 @@ export default function RootLayout({
       lang="en"
       className={`${playfair.variable} ${lato.variable} ${montserrat.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        {children}
+        <FadeUpObserver />
+      </body>
     </html>
   )
 }
