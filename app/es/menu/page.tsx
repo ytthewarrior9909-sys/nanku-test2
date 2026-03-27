@@ -26,7 +26,7 @@ export default function MenuPageES() {
         </div>
       </div>
 
-      <MenuClient />
+      <MenuClient lang="es" />
 
       <Footer lang="es" />
       <WhatsAppButton />

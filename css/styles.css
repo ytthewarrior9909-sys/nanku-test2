@@ -3816,6 +3816,103 @@ ul { list-style: none; }
 @media (min-width: 560px) { .nm-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1024px) { .nm-grid { grid-template-columns: repeat(3, 1fr); } }
 
+/* --- Clickable cards --- */
+.nm-card-clickable {
+  cursor: pointer;
+}
+.nm-card-clickable:hover {
+  border-color: rgba(232,117,26,0.4) !important;
+  background: rgba(255,255,255,0.08) !important;
+}
+.nm-card-photo-hint {
+  font-size: 0.7rem;
+  opacity: 0.6;
+  margin-left: 0.1rem;
+}
+
+/* --- Photo modal --- */
+.nm-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0,0,0,0.82);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: nm-fade-in 0.18s ease;
+}
+@keyframes nm-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.nm-modal {
+  position: relative;
+  background: #242424;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  width: 100%;
+  max-width: 480px;
+  animation: nm-slide-up 0.2s ease;
+}
+@keyframes nm-slide-up {
+  from { transform: translateY(16px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+.nm-modal-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 10;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.55);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.nm-modal-close:hover { background: rgba(232,117,26,0.7); }
+.nm-modal-img {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4/3;
+}
+.nm-modal-body {
+  padding: 1.1rem 1.4rem 1.3rem;
+}
+.nm-modal-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.nm-modal-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.3;
+}
+.nm-modal-price {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #E8751A;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.nm-modal-desc {
+  font-size: 0.84rem;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.55;
+}
+
 /* --- Menu card --- */
 .nm-card {
   background: rgba(255,255,255,0.04);

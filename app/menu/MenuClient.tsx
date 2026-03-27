@@ -7,16 +7,188 @@ type Panel = 'food' | 'drinks'
 type FoodCat = 'appetizers' | 'seafood' | 'pasta' | 'white-meat' | 'steaks' | 'vegetarian' | 'costa-rica' | 'desserts'
 type DrinksCat = 'licores' | 'bebidas' | 'cervezas' | 'tiki' | 'cocteles'
 
-const foodCats: { id: FoodCat; label: string }[] = [
-  { id: 'appetizers', label: 'Appetizers' },
-  { id: 'seafood', label: 'Sea Food' },
-  { id: 'pasta', label: 'Pasta' },
-  { id: 'white-meat', label: 'White Meat' },
-  { id: 'steaks', label: 'Steaks' },
-  { id: 'vegetarian', label: 'Vegetarian' },
-  { id: 'costa-rica', label: 'Costa Rica' },
-  { id: 'desserts', label: 'Desserts' },
-]
+const CDN = 'https://assets.cdn.filesafe.space/0M6K8lmvNdLqq7S28Bmn/media/'
+
+interface FoodItem {
+  name: string
+  price: string
+  desc: string
+  badge?: { text: string; type: string }
+  photo?: string
+}
+
+interface ModalState {
+  name: string
+  price: string
+  desc: string
+  photo: string
+}
+
+// ─── EN DATA ────────────────────────────────────────────────────────────────
+
+const enFood = {
+  appetizers: [
+    { name: 'Teriyaki Salad', price: '₡9,700', desc: 'Green salad served with fresh yellow-fin tuna encrusted with sesame seeds and teriyaki sauce.', photo: CDN + '69c5f5dc7794bffe444fbf93.jpg' },
+    { name: 'Quinoa Salad', price: '₡6,500', desc: 'Mixed salad bowl and quinoa served with balsamic dressing.', badge: { text: 'Vegan', type: 'vegan' }, photo: CDN + '69c5f6dc9619ac798a99f4d1.jpg' },
+    { name: 'Tuna Tartar', price: '₡9,900', desc: 'Tuna marinated with soy sauce, sesame, lemon, cucumber, red onions, served with crostini.', photo: CDN + '69c5f866421e24593383c6c8.jpg' },
+    { name: 'Stuffed Avocado', price: '₡8,350', desc: 'Stuffed avocado with shrimp in pomodoro sauce on a bed of lettuce.' },
+    { name: 'Octopus Ceviche', price: '₡10,500', desc: 'Octopus marinated with citrus soy sauce served with smashed plantains.', photo: CDN + '69c5f674146bc581d6ebd34f.jpg' },
+    { name: 'Fish Ceviche', price: '₡6,900', desc: 'Traditional Costa Rican ceviche served with mixed chips.', photo: CDN + '69c5f674146bc59c7debd350.jpg' },
+    { name: 'Passion Fruit Tuna Ceviche', price: '₡8,500', desc: 'Tuna marinated with passion fruit, soy and pepper oil served with mixed chips.' },
+  ] as FoodItem[],
+  seafood: [
+    { name: 'Teriyaki Tuna', price: '₡14,200', desc: 'Encrusted yellow-fin tuna with sesame seeds, served with vegetables, mashed potatoes, and teriyaki sauce.' },
+    { name: 'Grilled Octopus', price: '₡19,000', desc: 'Grilled octopus with sweet potato, salad, tomato chimichurri, and citrus concasse soy sauce.' },
+    { name: 'Caribbean Soup', price: '₡8,000', desc: 'Mixed seafood in tomato sauce with coconut milk, thyme, and chili pepper.', photo: CDN + '69c5f6dc7794bf5d9b4fe34b.jpg' },
+    { name: 'Whole Tilapia', price: '₡10,500', desc: 'Fried local tilapia with green salad, smashed plantains, refried beans and pico de gallo.', photo: CDN + '69c5f762146bc5af4febf1b7.jpg' },
+    { name: 'Trout With Creamy', price: '₡12,400', desc: 'Costa Rican trout in creamy sauce and shrimp served with artichoke rice and cherry tomato.', photo: CDN + '69c5f8665ebd49a0c4779e7f.jpg' },
+    { name: 'Mahi Mahi With Apple & Mango Chutney', price: '₡12,400', desc: 'Grilled mahi mahi served with rosemary potatoes, apple, mango, soy sauce, and Dijon mustard.' },
+  ] as FoodItem[],
+  pasta: [
+    { name: 'Salmon Ravioli', price: '₡10,200', desc: 'Salmon ravioli served with grana padana, Gorgonzola sauce, cherry tomatoes, mushrooms, basil and crostini.' },
+    { name: 'Spaghetti Pura Vida', price: '₡9,500', desc: 'Sautéed shrimp spaghetti with onion, basil, tomato sauce, served with avocado and crostini.' },
+    { name: 'Fettuccine Aglio E Olio', price: '₡9,350', desc: 'Fettuccine with olive oil, cherry tomatoes, basil, mushrooms, and chicken.' },
+    { name: 'Rigatoni In Aurora Sauce', price: '₡9,500', desc: 'Rigatoni pasta in aurora sauce (tomato and white sauce), with shrimps, parsley, onion, Parmesan cheese, crostinis.' },
+  ] as FoodItem[],
+  whiteMeat: [
+    { name: 'Cahuita Chicken', price: '₡9,100', desc: 'Grilled chicken with cahuita sauce (coconut milk, thyme, and chili pepper) served with vegetables and mashed potatoes.', photo: CDN + '69c5f8667794bfe0805014c0.jpg' },
+    { name: 'Nanku Chicken', price: '₡9,100', desc: 'Grilled chicken filet, served with mashed sweet potatoes, mini zucchini, mushroom, tomato cherry with hibiscus sauce.' },
+    { name: 'Pork Chop With Tamarindo', price: '₡14,100', desc: 'Pork chop served with stuffed cassava, grilled vegetables and tamarindo sauce.' },
+    { name: 'BBQ Pork Ribs', price: '₡12,000', desc: 'Pork ribs with BBQ sauce with pineapple, served with house salad, smashed plantains, refried beans and pico de gallo.' },
+  ] as FoodItem[],
+  steaks: [
+    { name: 'Steak Strips', price: '₡14,000', photo: CDN + '69c194d5fa8b211e8d5a9298.jpg' },
+    { name: 'Churrasco', price: '₡15,600', photo: CDN + '69c5edb5146bc5f778eaab9e.jpg' },
+    { name: 'Rib Eye', price: '₡17,500', photo: CDN + '69c5fbd8146bc51f9eec8ca7.jpg' },
+    { name: 'New York', price: '₡17,500', photo: CDN + '69c194d5fa8b2122095a9294.jpg' },
+    { name: 'Sirloin Steak', price: '₡19,500', photo: CDN + '69c5fbd8146bc52decec8ca6.jpg' },
+    { name: 'Surf And Turf Tenderloin Fajitas', price: '₡24,000', photo: CDN + '69c194d50d1082cd084c8590.jpg' },
+  ],
+  steakNote: 'All of our meat cuts are served with rosemary potatoes, sweet plantain, jalapeño, and chimichurri.',
+  vegetarian: [
+    { name: 'Mushroom Bruschetta', price: '₡6,000', desc: 'Fresh mushrooms and cherry tomatoes sautéed with olive oil, onion, Parmesan cheese, garlic, and tomato sauce.' },
+    { name: 'Stuffed Portobello Mushroom', price: '₡8,500', desc: 'Stuffed portobello mushrooms with basil and onions, topped with melted mozzarella cheese and served with crostini.' },
+    { name: 'Mushroom Ceviche', price: '₡5,500', desc: 'Mushroom ceviche with yellow pepper, cilantro, red onion and lime juice, served with mixed chips.' },
+    { name: 'Parmesan Eggplant', price: '₡8,500', desc: 'Encrusted eggplant with Parmesan cheese served with tomato sauce, capers, olives, and house salad.', photo: CDN + '69c5f8669619ac67709a2600.jpg' },
+    { name: 'Vegan Hamburger', price: '₡7,000', desc: 'Vegan hamburger with grilled vegetables, portobello mushroom, vegan cheese, served with potato wedges.', badge: { text: 'Vegan', type: 'vegan' } },
+  ] as FoodItem[],
+  costaRica: [
+    { name: 'Typical Casado', price: '₡7,800', desc: 'Typical casado served with rice, beans, picadillo, fried eggs, tortilla, cheese, salad and sweet plantain. Choice of beef, chicken or tilapia.', badge: { text: 'Vegan opt.', type: 'vegan-opt' } },
+    { name: 'Rice With Chicken', price: '₡7,300', desc: 'Sautéed chicken rice and vegetables, served with salad and french fries.', photo: CDN + '69c5f94c7794bf5a7b5031c0.jpg' },
+    { name: 'Chicharrones', price: '₡9,100', desc: 'Fried pork pieces served with salad, smashed plantains, pico de gallo, refried beans and fried cassava.' },
+    { name: 'Rice And Beans With Chicken', price: '₡9,100', desc: 'Caribbean style chicken cooked with coconut milk, chili pepper and thyme, accompanied by sweet plantain and salad.', photo: CDN + '69c5f94c5ebd497c7c77bc60.jpg' },
+    { name: 'Arenal Hamburger', price: '₡8,500', desc: '180g Angus beef, bacon, caramelized onions, mozzarella cheese, lettuce, pickles, tomato, served with french fries.', photo: CDN + '69c5f94d9619ac299c9a439d.png' },
+    { name: 'Nanku Nachos', price: '₡6,500', desc: 'Choice of beef, chicken or vegetarian. Tortilla chips, refried beans, pico de gallo, sour cream, mozzarella cheese and sliced avocado.', badge: { text: 'Vegan opt.', type: 'vegan-opt' } },
+    { name: 'Nanku Sandwich', price: '₡6,500', desc: 'Chicken, beef, or vegetarian with fresh lettuce, tomato, bacon, pickles, mozzarella cheese, served with french fries.' },
+  ] as FoodItem[],
+  desserts: [
+    { name: 'Coconut Caramel Flan', price: '₡4,700' },
+    { name: 'Chocolate Brownie With Vanilla Ice Cream', price: '₡4,700', photo: CDN + '69c5f94c7794bf69985031bf.jpg' },
+    { name: 'Passion Fruit Cheesecake', price: '₡4,700' },
+    { name: 'Banana or Pineapple in Orange & Cinnamon Sauce Flamed in Orange Liquor', price: '₡4,700' },
+  ],
+  notes: [
+    'Our restaurant prepares locally sourced produce, seafood, and meat cuts from nearby farmland, delivering you delicious and healthy farm-to-table meals.',
+    'Taxes included.',
+    'If you have a food allergy or special dietary requirements, please inform a member of staff or ask for more information.',
+  ],
+  topNotes: ['Farm-to-table', 'Locally sourced', 'Prices include taxes', 'Notify us of any allergies'],
+  cats: [
+    { id: 'appetizers' as FoodCat, label: 'Appetizers' },
+    { id: 'seafood' as FoodCat, label: 'Sea Food' },
+    { id: 'pasta' as FoodCat, label: 'Pasta' },
+    { id: 'white-meat' as FoodCat, label: 'White Meat' },
+    { id: 'steaks' as FoodCat, label: 'Steaks' },
+    { id: 'vegetarian' as FoodCat, label: 'Vegetarian' },
+    { id: 'costa-rica' as FoodCat, label: 'Costa Rica' },
+    { id: 'desserts' as FoodCat, label: 'Desserts' },
+  ],
+  panelFood: 'Food Menu',
+  panelDrinks: 'Drinks Menu',
+}
+
+// ─── ES DATA ────────────────────────────────────────────────────────────────
+
+const esFood = {
+  appetizers: [
+    { name: 'Ensalada Teriyaki', price: '₡9,700', desc: 'Ensalada verde con atún aleta amarilla fresco encostrado en ajonjolí con salsa teriyaki.', photo: CDN + '69c5f5dc7794bffe444fbf93.jpg' },
+    { name: 'Ensalada de Quinoa', price: '₡6,500', desc: 'Bowl de ensalada mixta con quinoa y aderezo balsámico.', badge: { text: 'Vegano', type: 'vegan' }, photo: CDN + '69c5f6dc9619ac798a99f4d1.jpg' },
+    { name: 'Tartar de Atún', price: '₡9,900', desc: 'Atún marinado con salsa de soya, ajonjolí, limón, pepino y cebolla morada, servido con crostini.', photo: CDN + '69c5f866421e24593383c6c8.jpg' },
+    { name: 'Aguacate Relleno', price: '₡8,350', desc: 'Aguacate relleno con camarones en salsa pomodoro sobre cama de lechuga.' },
+    { name: 'Ceviche de Pulpo', price: '₡10,500', desc: 'Pulpo marinado con salsa cítrica de soya, servido con patacones.', photo: CDN + '69c5f674146bc581d6ebd34f.jpg' },
+    { name: 'Ceviche de Pescado', price: '₡6,900', desc: 'Ceviche tradicional costarricense servido con chips mixtos.', photo: CDN + '69c5f674146bc59c7debd350.jpg' },
+    { name: 'Ceviche de Atún con Maracuyá', price: '₡8,500', desc: 'Atún marinado con maracuyá, soya y aceite de pimienta, servido con chips mixtos.' },
+  ] as FoodItem[],
+  seafood: [
+    { name: 'Atún Teriyaki', price: '₡14,200', desc: 'Atún aleta amarilla encostrado en ajonjolí, servido con vegetales, puré de papas y salsa teriyaki.' },
+    { name: 'Pulpo a la Parrilla', price: '₡19,000', desc: 'Pulpo a la parrilla con camote, ensalada, chimichurri de tomate y salsa cítrica de soya.' },
+    { name: 'Sopa Caribeña', price: '₡8,000', desc: 'Mariscos mixtos en salsa de tomate con leche de coco, tomillo y chile.', photo: CDN + '69c5f6dc7794bf5d9b4fe34b.jpg' },
+    { name: 'Tilapia Entera', price: '₡10,500', desc: 'Tilapia local frita con ensalada verde, patacones, frijoles molidos y pico de gallo.', photo: CDN + '69c5f762146bc5af4febf1b7.jpg' },
+    { name: 'Trucha en Salsa Cremosa', price: '₡12,400', desc: 'Trucha costarricense en salsa cremosa con camarones, servida con arroz de alcachofas y tomates cherry.', photo: CDN + '69c5f8665ebd49a0c4779e7f.jpg' },
+    { name: 'Mahi Mahi con Chutney de Manzana y Mango', price: '₡12,400', desc: 'Mahi mahi a la parrilla con papas al romero, manzana, mango, salsa de soya y mostaza Dijon.' },
+  ] as FoodItem[],
+  pasta: [
+    { name: 'Ravioles de Salmón', price: '₡10,200', desc: 'Ravioles de salmón con grana padana, salsa Gorgonzola, tomates cherry, champiñones, albahaca y crostini.' },
+    { name: 'Spaghetti Pura Vida', price: '₡9,500', desc: 'Spaghetti salteado con camarones, cebolla, albahaca y salsa de tomate, servido con aguacate y crostini.' },
+    { name: 'Fettuccine Aglio e Olio', price: '₡9,350', desc: 'Fettuccine con aceite de oliva, tomates cherry, albahaca, champiñones y pollo.' },
+    { name: 'Rigatoni en Salsa Aurora', price: '₡9,500', desc: 'Rigatoni en salsa aurora (tomate y salsa blanca) con camarones, perejil, cebolla, queso Parmesano y crostini.' },
+  ] as FoodItem[],
+  whiteMeat: [
+    { name: 'Pollo Cahuita', price: '₡9,100', desc: 'Pollo a la parrilla con salsa cahuita (leche de coco, tomillo y chile), servido con vegetales y puré de papas.', photo: CDN + '69c5f8667794bfe0805014c0.jpg' },
+    { name: 'Pollo Nanku', price: '₡9,100', desc: 'Filete de pollo a la parrilla con puré de camote, mini zucchini, champiñones y tomates cherry con salsa de hibisco.' },
+    { name: 'Chuleta de Cerdo con Tamarindo', price: '₡14,100', desc: 'Chuleta de cerdo con yuca rellena, vegetales a la parrilla y salsa de tamarindo.' },
+    { name: 'Costillas BBQ', price: '₡12,000', desc: 'Costillas de cerdo con salsa BBQ de piña, servidas con ensalada de la casa, patacones, frijoles molidos y pico de gallo.' },
+  ] as FoodItem[],
+  steaks: [
+    { name: 'Tiras de Lomo', price: '₡14,000', photo: CDN + '69c194d5fa8b211e8d5a9298.jpg' },
+    { name: 'Churrasco', price: '₡15,600', photo: CDN + '69c5edb5146bc5f778eaab9e.jpg' },
+    { name: 'Rib Eye', price: '₡17,500', photo: CDN + '69c5fbd8146bc51f9eec8ca7.jpg' },
+    { name: 'New York', price: '₡17,500', photo: CDN + '69c194d5fa8b2122095a9294.jpg' },
+    { name: 'Sirloin', price: '₡19,500', photo: CDN + '69c5fbd8146bc52decec8ca6.jpg' },
+    { name: 'Fajitas Surf and Turf', price: '₡24,000', photo: CDN + '69c194d50d1082cd084c8590.jpg' },
+  ],
+  steakNote: 'Todos nuestros cortes se sirven con papas al romero, plátano maduro, jalapeño y chimichurri.',
+  vegetarian: [
+    { name: 'Bruschetta de Champiñones', price: '₡6,000', desc: 'Champiñones frescos y tomates cherry salteados con aceite de oliva, cebolla, queso Parmesano, ajo y salsa de tomate.' },
+    { name: 'Champiñón Portobello Relleno', price: '₡8,500', desc: 'Champiñones portobello rellenos con albahaca y cebolla, cubiertos con mozzarella derretida y servidos con crostini.' },
+    { name: 'Ceviche de Champiñones', price: '₡5,500', desc: 'Ceviche de champiñones con chile amarillo, cilantro, cebolla morada y limón, servido con chips mixtos.' },
+    { name: 'Berenjena Parmesana', price: '₡8,500', desc: 'Berenjena encostrada con queso Parmesano, servida con salsa de tomate, alcaparras, aceitunas y ensalada de la casa.', photo: CDN + '69c5f8669619ac67709a2600.jpg' },
+    { name: 'Hamburguesa Vegana', price: '₡7,000', desc: 'Hamburguesa vegana con vegetales a la parrilla, champiñón portobello y queso vegano, servida con papas en gajos.', badge: { text: 'Vegano', type: 'vegan' } },
+  ] as FoodItem[],
+  costaRica: [
+    { name: 'Casado Típico', price: '₡7,800', desc: 'Casado típico con arroz, frijoles, picadillo, huevo frito, tortilla, queso, ensalada y plátano maduro. A elección: carne, pollo o tilapia.', badge: { text: 'Vegano opt.', type: 'vegan-opt' } },
+    { name: 'Arroz con Pollo', price: '₡7,300', desc: 'Arroz salteado con pollo y vegetales, servido con ensalada y papas fritas.', photo: CDN + '69c5f94c7794bf5a7b5031c0.jpg' },
+    { name: 'Chicharrones', price: '₡9,100', desc: 'Trozos de cerdo fritos con ensalada, patacones, pico de gallo, frijoles molidos y yuca frita.' },
+    { name: 'Rice and Beans con Pollo', price: '₡9,100', desc: 'Pollo estilo caribeño cocinado con leche de coco, chile y tomillo, acompañado de plátano maduro y ensalada.', photo: CDN + '69c5f94c5ebd497c7c77bc60.jpg' },
+    { name: 'Hamburguesa Arenal', price: '₡8,500', desc: 'Carne Angus 180g, tocino, cebollas caramelizadas, mozzarella, lechuga, encurtidos y tomate, servida con papas fritas.', photo: CDN + '69c5f94d9619ac299c9a439d.png' },
+    { name: 'Nachos Nanku', price: '₡6,500', desc: 'A elección: carne, pollo o vegetariano. Totopos, frijoles molidos, pico de gallo, crema, mozzarella y aguacate.', badge: { text: 'Vegano opt.', type: 'vegan-opt' } },
+    { name: 'Sándwich Nanku', price: '₡6,500', desc: 'Pollo, carne o vegetariano con lechuga fresca, tomate, tocino, encurtidos y mozzarella, servido con papas fritas.' },
+  ] as FoodItem[],
+  desserts: [
+    { name: 'Flan de Coco y Caramelo', price: '₡4,700' },
+    { name: 'Brownie de Chocolate con Helado de Vainilla', price: '₡4,700', photo: CDN + '69c5f94c7794bf69985031bf.jpg' },
+    { name: 'Cheesecake de Maracuyá', price: '₡4,700' },
+    { name: 'Banano o Piña en Salsa de Naranja y Canela Flameado con Licor de Naranja', price: '₡4,700' },
+  ],
+  notes: [
+    'Nuestro restaurante prepara ingredientes de origen local, mariscos y cortes de carne de granjas cercanas, ofreciéndole comida deliciosa y saludable del campo a la mesa.',
+    'Impuestos incluidos.',
+    'Si tiene alguna alergia alimentaria o requisitos dietéticos especiales, por favor informe a un miembro del personal.',
+  ],
+  topNotes: ['Del campo a la mesa', 'Ingredientes locales', 'Precios incluyen impuestos', 'Avísenos sobre alergias'],
+  cats: [
+    { id: 'appetizers' as FoodCat, label: 'Entradas' },
+    { id: 'seafood' as FoodCat, label: 'Mariscos' },
+    { id: 'pasta' as FoodCat, label: 'Pasta' },
+    { id: 'white-meat' as FoodCat, label: 'Carnes Blancas' },
+    { id: 'steaks' as FoodCat, label: 'Carnes' },
+    { id: 'vegetarian' as FoodCat, label: 'Vegetariano' },
+    { id: 'costa-rica' as FoodCat, label: 'Costa Rica' },
+    { id: 'desserts' as FoodCat, label: 'Postres' },
+  ],
+  panelFood: 'Comida',
+  panelDrinks: 'Bebidas',
+}
 
 const drinksCats: { id: DrinksCat; label: string }[] = [
   { id: 'licores', label: 'Licores' },
@@ -26,25 +198,45 @@ const drinksCats: { id: DrinksCat; label: string }[] = [
   { id: 'cocteles', label: 'Cocktails' },
 ]
 
-function MenuCard({ name, price, desc, badge }: { name: string; price: string; desc: string; badge?: { text: string; type: string } }) {
+// ─── SUB-COMPONENTS ──────────────────────────────────────────────────────────
+
+function MenuCard({ item, onOpen }: { item: FoodItem; onOpen?: (item: FoodItem) => void }) {
+  const clickable = !!item.photo && !!onOpen
   return (
-    <div className="nm-card">
+    <div
+      className={`nm-card${clickable ? ' nm-card-clickable' : ''}`}
+      onClick={clickable ? () => onOpen!(item) : undefined}
+      role={clickable ? 'button' : undefined}
+      tabIndex={clickable ? 0 : undefined}
+      onKeyDown={clickable ? (e) => e.key === 'Enter' && onOpen!(item) : undefined}
+    >
       <div className="nm-card-top">
         <h3 className="nm-card-name">
-          {name}
-          {badge && <span className={`nm-badge nm-badge-${badge.type}`}>{badge.text}</span>}
+          {item.name}
+          {item.badge && <span className={`nm-badge nm-badge-${item.badge.type}`}>{item.badge.text}</span>}
+          {clickable && <span className="nm-card-photo-hint">📷</span>}
         </h3>
-        <span className="nm-card-price">{price}</span>
+        <span className="nm-card-price">{item.price}</span>
       </div>
-      <p className="nm-card-desc">{desc}</p>
+      {item.desc && <p className="nm-card-desc">{item.desc}</p>}
     </div>
   )
 }
 
-function PriceRow({ name, price }: { name: string; price: string }) {
+function PriceRow({ name, price, photo, onOpen }: { name: string; price: string; photo?: string; onOpen?: (name: string, price: string, photo: string) => void }) {
+  const clickable = !!photo && !!onOpen
   return (
-    <div className="nm-price-row">
-      <span className="nm-price-name">{name}</span>
+    <div
+      className={`nm-price-row${clickable ? ' nm-card-clickable' : ''}`}
+      onClick={clickable ? () => onOpen!(name, price, photo!) : undefined}
+      role={clickable ? 'button' : undefined}
+      tabIndex={clickable ? 0 : undefined}
+      onKeyDown={clickable ? (e) => e.key === 'Enter' && onOpen!(name, price, photo!) : undefined}
+    >
+      <span className="nm-price-name">
+        {name}
+        {clickable && <span className="nm-card-photo-hint">📷</span>}
+      </span>
       <span className="nm-price-dots"></span>
       <span className="nm-price-val">{price}</span>
     </div>
@@ -95,49 +287,93 @@ function DSub({ title, children }: { title: string; children: React.ReactNode })
   )
 }
 
-export default function MenuClient() {
+// ─── MAIN COMPONENT ──────────────────────────────────────────────────────────
+
+export default function MenuClient({ lang = 'en' }: { lang?: 'en' | 'es' }) {
   const [panel, setPanel] = useState<Panel>('food')
   const [foodCat, setFoodCat] = useState<FoodCat>('appetizers')
   const [drinksCat, setDrinksCat] = useState<DrinksCat>('licores')
+  const [modal, setModal] = useState<ModalState | null>(null)
+
+  const d = lang === 'es' ? esFood : enFood
+
+  const openModal = (name: string, price: string, photo: string, desc = '') =>
+    setModal({ name, price, photo, desc })
 
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id)
     if (el) el.scrollIntoView({ behavior: 'smooth' })
   }
 
+  const banners = {
+    appetizers: 'https://assets.cdn.filesafe.space/0M6K8lmvNdLqq7S28Bmn/media/69ba21d29ab5e21035712b06.jpg',
+    seafood: 'https://assets.cdn.filesafe.space/0M6K8lmvNdLqq7S28Bmn/media/69ba21d661cba538a2a13a41.jpg',
+    pasta: 'https://assets.cdn.filesafe.space/0M6K8lmvNdLqq7S28Bmn/media/69ba21db9ab5e22eda712c59.jpg',
+    whiteMeat: 'https://assets.cdn.filesafe.space/0M6K8lmvNdLqq7S28Bmn/media/69ba21e9ad0276ce1964ea9e.jpg',
+    steaks: 'https://assets.cdn.filesafe.space/0M6K8lmvNdLqq7S28Bmn/media/69ba21eead02761cdd64eb23.jpg',
+    vegetarian: 'https://assets.cdn.filesafe.space/0M6K8lmvNdLqq7S28Bmn/media/69ba221edac584673cb76ed5.jpg',
+    costaRica: 'https://assets.cdn.filesafe.space/0M6K8lmvNdLqq7S28Bmn/media/69ba22259ab5e2490f7138fa.jpg',
+    desserts: 'https://assets.cdn.filesafe.space/0M6K8lmvNdLqq7S28Bmn/media/69ba222cdac58405aab77052.jpg',
+  }
+
+  const catTitles: Record<FoodCat, string> = {
+    'appetizers': d.cats[0].label,
+    'seafood': d.cats[1].label,
+    'pasta': d.cats[2].label,
+    'white-meat': d.cats[3].label,
+    'steaks': d.cats[4].label,
+    'vegetarian': d.cats[5].label,
+    'costa-rica': d.cats[6].label,
+    'desserts': d.cats[7].label,
+  }
+
   return (
     <>
+      {/* Photo Modal */}
+      {modal && (
+        <div className="nm-modal-backdrop" onClick={() => setModal(null)}>
+          <div className="nm-modal" onClick={(e) => e.stopPropagation()}>
+            <button className="nm-modal-close" onClick={() => setModal(null)} aria-label="Close">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+            <div className="nm-modal-img">
+              <Image src={modal.photo} alt={modal.name} fill style={{ objectFit: 'cover' }} />
+            </div>
+            <div className="nm-modal-body">
+              <div className="nm-modal-top">
+                <h3 className="nm-modal-name">{modal.name}</h3>
+                <span className="nm-modal-price">{modal.price}</span>
+              </div>
+              {modal.desc && <p className="nm-modal-desc">{modal.desc}</p>}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Sticky Nav */}
       <div className="nm-sticky-nav">
         <div className="nm-main-row">
-          <button
-            className={`nm-main-btn${panel === 'food' ? ' active' : ''}`}
-            onClick={() => setPanel('food')}
-          >
+          <button className={`nm-main-btn${panel === 'food' ? ' active' : ''}`} onClick={() => setPanel('food')}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2M7 2v20M21 15V2M18 2c0 0 3 0 3 6s-3 6-3 6" />
             </svg>
-            Food Menu
+            {d.panelFood}
           </button>
-          <button
-            className={`nm-main-btn${panel === 'drinks' ? ' active' : ''}`}
-            onClick={() => setPanel('drinks')}
-          >
+          <button className={`nm-main-btn${panel === 'drinks' ? ' active' : ''}`} onClick={() => setPanel('drinks')}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M8 22h8M12 11v11M20 7H4l2 9h12z" /><path d="M4 7c0-2.2 1.8-4 4-4h8c2.2 0 4 1.8 4 4" />
             </svg>
-            Drinks Menu
+            {d.panelDrinks}
           </button>
         </div>
         <div className="nm-cats-row">
           {panel === 'food' && (
             <div className="nm-cats-inner">
-              {foodCats.map((c) => (
-                <button
-                  key={c.id}
-                  className={`nm-cat-btn${foodCat === c.id ? ' active' : ''}`}
-                  onClick={() => { setFoodCat(c.id); scrollToSection(c.id) }}
-                >
+              {d.cats.map((c) => (
+                <button key={c.id} className={`nm-cat-btn${foodCat === c.id ? ' active' : ''}`}
+                  onClick={() => { setFoodCat(c.id); scrollToSection(c.id) }}>
                   {c.label}
                 </button>
               ))}
@@ -146,11 +382,8 @@ export default function MenuClient() {
           {panel === 'drinks' && (
             <div className="nm-cats-inner">
               {drinksCats.map((c) => (
-                <button
-                  key={c.id}
-                  className={`nm-cat-btn${drinksCat === c.id ? ' active' : ''}`}
-                  onClick={() => { setDrinksCat(c.id); scrollToSection(c.id) }}
-                >
+                <button key={c.id} className={`nm-cat-btn${drinksCat === c.id ? ' active' : ''}`}
+                  onClick={() => { setDrinksCat(c.id); scrollToSection(c.id) }}>
                   {c.label}
                 </button>
               ))}
@@ -164,117 +397,108 @@ export default function MenuClient() {
         <>
           <div className="nm-notes">
             <div className="nm-notes-inner">
-              <span>Farm-to-table</span>
-              <span>Locally sourced</span>
-              <span>Prices include taxes</span>
-              <span>Notify us of any allergies</span>
+              {d.topNotes.map((n) => <span key={n}>{n}</span>)}
             </div>
           </div>
           <div className="nm-food-sections">
 
             <section className="nm-food-section" id="appetizers">
-              <SectionBanner src="https://assets.cdn.filesafe.space/0M6K8lmvNdLqq7S28Bmn/media/69ba21d29ab5e21035712b06.jpg" title="Appetizers" />
+              <SectionBanner src={banners.appetizers} title={catTitles['appetizers']} />
               <div className="nm-grid">
-                <MenuCard name="Teriyaki Salad" price="₡9,700" desc="Green salad served with fresh yellow-fin tuna encrusted with sesame seeds and teriyaki sauce." />
-                <MenuCard name="Quinoa Salad" price="₡6,500" desc="Mixed salad bowl and quinoa served with balsamic dressing." badge={{ text: 'Vegan', type: 'vegan' }} />
-                <MenuCard name="Tuna Tartar" price="₡9,900" desc="Tuna marinated with soy sauce, sesame, lemon, cucumber, red onions, served with crostini." />
-                <MenuCard name="Stuffed Avocado" price="₡8,350" desc="Stuffed avocado with shrimp in pomodoro sauce on a bed of lettuce." />
-                <MenuCard name="Octopus Ceviche" price="₡10,500" desc="Octopus marinated with citrus soy sauce served with smashed plantains." />
-                <MenuCard name="Fish Ceviche" price="₡6,900" desc="Traditional Costa Rican ceviche served with mixed chips." />
-                <MenuCard name="Passion Fruit Tuna Ceviche" price="₡8,500" desc="Tuna marinated with passion fruit, soy and pepper oil served with mixed chips." />
+                {d.appetizers.map((item) => (
+                  <MenuCard key={item.name} item={item}
+                    onOpen={item.photo ? (i) => openModal(i.name, i.price, i.photo!, i.desc) : undefined} />
+                ))}
               </div>
             </section>
 
             <section className="nm-food-section" id="seafood">
-              <SectionBanner src="https://assets.cdn.filesafe.space/0M6K8lmvNdLqq7S28Bmn/media/69ba21d661cba538a2a13a41.jpg" title="Sea Food" />
+              <SectionBanner src={banners.seafood} title={catTitles['seafood']} />
               <div className="nm-grid">
-                <MenuCard name="Teriyaki Tuna" price="₡14,200" desc="Encrusted yellow-fin tuna with sesame seeds, served with vegetables, mashed potatoes, and teriyaki sauce." />
-                <MenuCard name="Grilled Octopus" price="₡19,000" desc="Grilled octopus with sweet potato, salad, tomato chimichurri, and citrus concasse soy sauce." />
-                <MenuCard name="Caribbean Soup" price="₡8,000" desc="Mixed seafood in tomato sauce with coconut milk, thyme, and chili pepper." />
-                <MenuCard name="Whole Tilapia" price="₡10,500" desc="Fried local tilapia with green salad, smashed plantains, refried beans and pico de gallo." />
-                <MenuCard name="Trout With Creamy" price="₡12,400" desc="Costa Rican trout in creamy sauce and shrimp served with artichoke rice and cherry tomato." />
-                <MenuCard name="Mahi Mahi With Apple & Mango Chutney" price="₡12,400" desc="Grilled mahi mahi served with rosemary potatoes, apple, mango, soy sauce, and Dijon mustard." />
+                {d.seafood.map((item) => (
+                  <MenuCard key={item.name} item={item}
+                    onOpen={item.photo ? (i) => openModal(i.name, i.price, i.photo!, i.desc) : undefined} />
+                ))}
               </div>
             </section>
 
             <section className="nm-food-section" id="pasta">
-              <SectionBanner src="https://assets.cdn.filesafe.space/0M6K8lmvNdLqq7S28Bmn/media/69ba21db9ab5e22eda712c59.jpg" title="Pasta" />
+              <SectionBanner src={banners.pasta} title={catTitles['pasta']} />
               <div className="nm-grid">
-                <MenuCard name="Salmon Ravioli" price="₡10,200" desc="Salmon ravioli served with grana padana, Gorgonzola sauce, cherry tomatoes, mushrooms, basil and crostini." />
-                <MenuCard name="Spaghetti Pura Vida" price="₡9,500" desc="Sautéed shrimp spaghetti with onion, basil, tomato sauce, served with avocado and crostini." />
-                <MenuCard name="Fettuccine Aglio E Olio" price="₡9,350" desc="Fettuccine with olive oil, cherry tomatoes, basil, mushrooms, and chicken." />
-                <MenuCard name="Rigatoni In Aurora Sauce" price="₡9,500" desc="Rigatoni pasta in aurora sauce (tomato and white sauce), with shrimps, parsley, onion, Parmesan cheese, crostinis." />
+                {d.pasta.map((item) => (
+                  <MenuCard key={item.name} item={item} />
+                ))}
               </div>
             </section>
 
             <section className="nm-food-section" id="white-meat">
-              <SectionBanner src="https://assets.cdn.filesafe.space/0M6K8lmvNdLqq7S28Bmn/media/69ba21e9ad0276ce1964ea9e.jpg" title="White Meat" />
+              <SectionBanner src={banners.whiteMeat} title={catTitles['white-meat']} />
               <div className="nm-grid">
-                <MenuCard name="Cahuita Chicken" price="₡9,100" desc="Grilled chicken with cahuita sauce (coconut milk, thyme, and chili pepper) served with vegetables and mashed potatoes." />
-                <MenuCard name="Nanku Chicken" price="₡9,100" desc="Grilled chicken filet, served with mashed sweet potatoes, mini zucchini, mushroom, tomato cherry with hibiscus sauce." />
-                <MenuCard name="Pork Chop With Tamarindo" price="₡14,100" desc="Pork chop served with stuffed cassava, grilled vegetables and tamarindo sauce." />
-                <MenuCard name="BBQ Pork Ribs" price="₡12,000" desc="Pork ribs with BBQ sauce with pineapple, served with house salad, smashed plantains, refried beans and pico de gallo." />
+                {d.whiteMeat.map((item) => (
+                  <MenuCard key={item.name} item={item}
+                    onOpen={item.photo ? (i) => openModal(i.name, i.price, i.photo!, i.desc) : undefined} />
+                ))}
               </div>
             </section>
 
             <section className="nm-food-section" id="steaks">
-              <SectionBanner src="https://assets.cdn.filesafe.space/0M6K8lmvNdLqq7S28Bmn/media/69ba21eead02761cdd64eb23.jpg" title="Steaks" />
+              <SectionBanner src={banners.steaks} title={catTitles['steaks']} />
               <div className="nm-steak-grid">
-                <PriceRow name="Steak Strips" price="₡14,000" />
-                <PriceRow name="Churrasco" price="₡15,600" />
-                <PriceRow name="Rib Eye" price="₡17,500" />
-                <PriceRow name="New York" price="₡17,500" />
-                <PriceRow name="Sirloin Steak" price="₡19,500" />
-                <PriceRow name="Surf And Turf Tenderloin Fajitas" price="₡24,000" />
+                {d.steaks.map((s) => (
+                  <PriceRow key={s.name} name={s.name} price={s.price} photo={s.photo}
+                    onOpen={s.photo ? (name, price, photo) => openModal(name, price, photo) : undefined} />
+                ))}
               </div>
-              <p className="nm-steak-note">All of our meat cuts are served with rosemary potatoes, sweet plantain, jalapeño, and chimichurri.</p>
+              <p className="nm-steak-note">{d.steakNote}</p>
             </section>
 
             <section className="nm-food-section" id="vegetarian">
-              <SectionBanner src="https://assets.cdn.filesafe.space/0M6K8lmvNdLqq7S28Bmn/media/69ba221edac584673cb76ed5.jpg" title="Vegetarian" />
+              <SectionBanner src={banners.vegetarian} title={catTitles['vegetarian']} />
               <div className="nm-grid">
-                <MenuCard name="Mushroom Bruschetta" price="₡6,000" desc="Fresh mushrooms and cherry tomatoes sautéed with olive oil, onion, Parmesan cheese, garlic, and tomato sauce." />
-                <MenuCard name="Stuffed Portobello Mushroom" price="₡8,500" desc="Stuffed portobello mushrooms with basil and onions, topped with melted mozzarella cheese and served with crostini." />
-                <MenuCard name="Mushroom Ceviche" price="₡5,500" desc="Mushroom ceviche with yellow pepper, cilantro, red onion and lime juice, served with mixed chips." />
-                <MenuCard name="Parmesan Eggplant" price="₡8,500" desc="Encrusted eggplant with Parmesan cheese served with tomato sauce, capers, olives, and house salad." />
-                <MenuCard name="Vegan Hamburger" price="₡7,000" desc="Vegan hamburger with grilled vegetables, portobello mushroom, vegan cheese, served with potato wedges." badge={{ text: 'Vegan', type: 'vegan' }} />
+                {d.vegetarian.map((item) => (
+                  <MenuCard key={item.name} item={item}
+                    onOpen={item.photo ? (i) => openModal(i.name, i.price, i.photo!, i.desc) : undefined} />
+                ))}
               </div>
             </section>
 
             <section className="nm-food-section" id="costa-rica">
-              <SectionBanner src="https://assets.cdn.filesafe.space/0M6K8lmvNdLqq7S28Bmn/media/69ba22259ab5e2490f7138fa.jpg" title="Costa Rica" />
+              <SectionBanner src={banners.costaRica} title={catTitles['costa-rica']} />
               <div className="nm-grid">
-                <MenuCard name="Typical Casado" price="₡7,800" desc="Typical casado served with rice, beans, picadillo, fried eggs, tortilla, cheese, salad and sweet plantain. Choice of beef, chicken or tilapia." badge={{ text: 'Vegan opt.', type: 'vegan-opt' }} />
-                <MenuCard name="Rice With Chicken" price="₡7,300" desc="Sautéed chicken rice and vegetables, served with salad and french fries." />
-                <MenuCard name="Chicharrones" price="₡9,100" desc="Fried pork pieces served with salad, smashed plantains, pico de gallo, refried beans and fried cassava." />
-                <MenuCard name="Rice And Beans With Chicken" price="₡9,100" desc="Caribbean style chicken cooked with coconut milk, chili pepper and thyme, accompanied by sweet plantain and salad." />
-                <MenuCard name="Arenal Hamburger" price="₡8,500" desc="180g Angus beef, bacon, caramelized onions, mozzarella cheese, lettuce, pickles, tomato, served with french fries." />
-                <MenuCard name="Nanku Nachos" price="₡6,500" desc="Choice of beef, chicken or vegetarian. Tortilla chips, refried beans, pico de gallo, sour cream, mozzarella cheese and sliced avocado." badge={{ text: 'Vegan opt.', type: 'vegan-opt' }} />
-                <MenuCard name="Nanku Sandwich" price="₡6,500" desc="Chicken, beef, or vegetarian with fresh lettuce, tomato, bacon, pickles, mozzarella cheese, served with french fries." />
+                {d.costaRica.map((item) => (
+                  <MenuCard key={item.name} item={item}
+                    onOpen={item.photo ? (i) => openModal(i.name, i.price, i.photo!, i.desc) : undefined} />
+                ))}
               </div>
             </section>
 
             <section className="nm-food-section" id="desserts">
-              <SectionBanner src="https://assets.cdn.filesafe.space/0M6K8lmvNdLqq7S28Bmn/media/69ba222cdac58405aab77052.jpg" title="Desserts" />
+              <SectionBanner src={banners.desserts} title={catTitles['desserts']} />
               <div className="nm-dessert-grid">
-                {[
-                  { name: 'Coconut Caramel Flan', price: '₡4,700' },
-                  { name: 'Chocolate Brownie With Vanilla Ice Cream', price: '₡4,700' },
-                  { name: 'Passion Fruit Cheesecake', price: '₡4,700' },
-                  { name: 'Banana or Pineapple in Orange & Cinnamon Sauce Flamed in Orange Liquor', price: '₡4,700' },
-                ].map((d) => (
-                  <div key={d.name} className="nm-dessert-item">
-                    <span className="nm-dessert-name">{d.name}</span>
-                    <span className="nm-dessert-price">{d.price}</span>
+                {d.desserts.map((item) => (
+                  <div key={item.name}
+                    className={`nm-dessert-item${item.photo ? ' nm-card-clickable' : ''}`}
+                    onClick={item.photo ? () => openModal(item.name, item.price, item.photo!) : undefined}
+                    role={item.photo ? 'button' : undefined}
+                    tabIndex={item.photo ? 0 : undefined}
+                  >
+                    <span className="nm-dessert-name">
+                      {item.name}
+                      {item.photo && <span className="nm-card-photo-hint">📷</span>}
+                    </span>
+                    <span className="nm-dessert-price">{item.price}</span>
                   </div>
                 ))}
               </div>
             </section>
 
             <div className="nm-food-notes">
-              <div className="nm-food-note"><span className="nm-fn-icon">✦</span><span>Our restaurant prepares locally sourced produce, seafood, and meat cuts from nearby farmland, delivering you delicious and healthy farm-to-table meals.</span></div>
-              <div className="nm-food-note"><span className="nm-fn-icon">✦</span><span>Taxes included.</span></div>
-              <div className="nm-food-note"><span className="nm-fn-icon">✦</span><span>If you have a food allergy or special dietary requirements, please inform a member of staff or ask for more information.</span></div>
+              {d.notes.map((n) => (
+                <div key={n} className="nm-food-note">
+                  <span className="nm-fn-icon">✦</span>
+                  <span>{n}</span>
+                </div>
+              ))}
             </div>
           </div>
         </>
