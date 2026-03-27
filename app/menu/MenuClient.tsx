@@ -12,7 +12,7 @@ const CDN = 'https://assets.cdn.filesafe.space/0M6K8lmvNdLqq7S28Bmn/media/'
 interface FoodItem {
   name: string
   price: string
-  desc: string
+  desc?: string
   badge?: { text: string; type: string }
   photo?: string
 }
@@ -20,8 +20,9 @@ interface FoodItem {
 interface ModalState {
   name: string
   price: string
-  desc: string
+  desc?: string
   photo: string
+  suggestions: FoodItem[]
 }
 
 // ─── EN DATA ────────────────────────────────────────────────────────────────
@@ -210,35 +211,34 @@ function MenuCard({ item, onOpen }: { item: FoodItem; onOpen?: (item: FoodItem) 
       tabIndex={clickable ? 0 : undefined}
       onKeyDown={clickable ? (e) => e.key === 'Enter' && onOpen!(item) : undefined}
     >
-      <div className="nm-card-top">
-        <h3 className="nm-card-name">
-          {item.name}
-          {item.badge && <span className={`nm-badge nm-badge-${item.badge.type}`}>{item.badge.text}</span>}
-          {clickable && <span className="nm-card-photo-hint">📷</span>}
-        </h3>
-        <span className="nm-card-price">{item.price}</span>
+      {item.photo && <div className="nm-card-thumb"><Image src={item.photo} alt={item.name} fill style={{ objectFit: 'cover' }} /></div>}
+      <div className="nm-card-body">
+        <div className="nm-card-top">
+          <h3 className="nm-card-name">
+            {item.name}
+            {item.badge && <span className={`nm-badge nm-badge-${item.badge.type}`}>{item.badge.text}</span>}
+          </h3>
+          <span className="nm-card-price">{item.price}</span>
+        </div>
+        {item.desc && <p className="nm-card-desc">{item.desc}</p>}
       </div>
-      {item.desc && <p className="nm-card-desc">{item.desc}</p>}
     </div>
   )
 }
 
-function PriceRow({ name, price, photo, onOpen }: { name: string; price: string; photo?: string; onOpen?: (name: string, price: string, photo: string) => void }) {
-  const clickable = !!photo && !!onOpen
+function PriceRow({ item, onOpen }: { item: FoodItem; onOpen?: (item: FoodItem) => void }) {
+  const clickable = !!item.photo && !!onOpen
   return (
     <div
       className={`nm-price-row${clickable ? ' nm-card-clickable' : ''}`}
-      onClick={clickable ? () => onOpen!(name, price, photo!) : undefined}
+      onClick={clickable ? () => onOpen!(item) : undefined}
       role={clickable ? 'button' : undefined}
       tabIndex={clickable ? 0 : undefined}
-      onKeyDown={clickable ? (e) => e.key === 'Enter' && onOpen!(name, price, photo!) : undefined}
+      onKeyDown={clickable ? (e) => e.key === 'Enter' && onOpen!(item) : undefined}
     >
-      <span className="nm-price-name">
-        {name}
-        {clickable && <span className="nm-card-photo-hint">📷</span>}
-      </span>
+      <span className="nm-price-name">{item.name}</span>
       <span className="nm-price-dots"></span>
-      <span className="nm-price-val">{price}</span>
+      <span className="nm-price-val">{item.price}</span>
     </div>
   )
 }
@@ -297,8 +297,16 @@ export default function MenuClient({ lang = 'en' }: { lang?: 'en' | 'es' }) {
 
   const d = lang === 'es' ? esFood : enFood
 
-  const openModal = (name: string, price: string, photo: string, desc = '') =>
-    setModal({ name, price, photo, desc })
+  const openModal = (item: FoodItem, sectionItems: FoodItem[]) =>
+    setModal({
+      name: item.name,
+      price: item.price,
+      desc: item.desc,
+      photo: item.photo!,
+      suggestions: sectionItems.filter(s => s.name !== item.name).slice(0, 4),
+    })
+
+  const suggestLabel = lang === 'es' ? 'Platillos que te podrían gustar' : 'You might also like'
 
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id)
@@ -338,16 +346,51 @@ export default function MenuClient({ lang = 'en' }: { lang?: 'en' | 'es' }) {
                 <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
               </svg>
             </button>
-            <div className="nm-modal-img">
-              <Image src={modal.photo} alt={modal.name} fill style={{ objectFit: 'cover' }} />
-            </div>
-            <div className="nm-modal-body">
-              <div className="nm-modal-top">
+
+            <div className="nm-modal-columns">
+              {/* Left — Photo */}
+              <div className="nm-modal-photo">
+                <Image src={modal.photo} alt={modal.name} fill style={{ objectFit: 'cover' }} />
+              </div>
+
+              {/* Right — Info */}
+              <div className="nm-modal-info">
                 <h3 className="nm-modal-name">{modal.name}</h3>
                 <span className="nm-modal-price">{modal.price}</span>
+                {modal.desc && <p className="nm-modal-desc">{modal.desc}</p>}
               </div>
-              {modal.desc && <p className="nm-modal-desc">{modal.desc}</p>}
             </div>
+
+            {/* Suggestions */}
+            {modal.suggestions.length > 0 && (
+              <div className="nm-modal-sugg">
+                <p className="nm-modal-sugg-title">{suggestLabel}</p>
+                <div className="nm-modal-sugg-row">
+                  {modal.suggestions.map((s) => (
+                    <button
+                      key={s.name}
+                      className="nm-modal-sugg-card"
+                      onClick={() => setModal(prev => prev ? {
+                        ...prev,
+                        name: s.name, price: s.price, desc: s.desc,
+                        photo: s.photo ?? prev.photo,
+                        suggestions: modal.suggestions.filter(x => x.name !== s.name),
+                      } : null)}
+                    >
+                      {s.photo && (
+                        <div className="nm-modal-sugg-img">
+                          <Image src={s.photo} alt={s.name} fill style={{ objectFit: 'cover' }} />
+                        </div>
+                      )}
+                      <div className="nm-modal-sugg-text">
+                        <span className="nm-modal-sugg-name">{s.name}</span>
+                        <span className="nm-modal-sugg-price">{s.price}</span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -407,7 +450,7 @@ export default function MenuClient({ lang = 'en' }: { lang?: 'en' | 'es' }) {
               <div className="nm-grid">
                 {d.appetizers.map((item) => (
                   <MenuCard key={item.name} item={item}
-                    onOpen={item.photo ? (i) => openModal(i.name, i.price, i.photo!, i.desc) : undefined} />
+                    onOpen={item.photo ? (i) => openModal(i, d.appetizers) : undefined} />
                 ))}
               </div>
             </section>
@@ -417,7 +460,7 @@ export default function MenuClient({ lang = 'en' }: { lang?: 'en' | 'es' }) {
               <div className="nm-grid">
                 {d.seafood.map((item) => (
                   <MenuCard key={item.name} item={item}
-                    onOpen={item.photo ? (i) => openModal(i.name, i.price, i.photo!, i.desc) : undefined} />
+                    onOpen={item.photo ? (i) => openModal(i, d.seafood) : undefined} />
                 ))}
               </div>
             </section>
@@ -425,9 +468,7 @@ export default function MenuClient({ lang = 'en' }: { lang?: 'en' | 'es' }) {
             <section className="nm-food-section" id="pasta">
               <SectionBanner src={banners.pasta} title={catTitles['pasta']} />
               <div className="nm-grid">
-                {d.pasta.map((item) => (
-                  <MenuCard key={item.name} item={item} />
-                ))}
+                {d.pasta.map((item) => <MenuCard key={item.name} item={item} />)}
               </div>
             </section>
 
@@ -436,7 +477,7 @@ export default function MenuClient({ lang = 'en' }: { lang?: 'en' | 'es' }) {
               <div className="nm-grid">
                 {d.whiteMeat.map((item) => (
                   <MenuCard key={item.name} item={item}
-                    onOpen={item.photo ? (i) => openModal(i.name, i.price, i.photo!, i.desc) : undefined} />
+                    onOpen={item.photo ? (i) => openModal(i, d.whiteMeat) : undefined} />
                 ))}
               </div>
             </section>
@@ -445,8 +486,8 @@ export default function MenuClient({ lang = 'en' }: { lang?: 'en' | 'es' }) {
               <SectionBanner src={banners.steaks} title={catTitles['steaks']} />
               <div className="nm-steak-grid">
                 {d.steaks.map((s) => (
-                  <PriceRow key={s.name} name={s.name} price={s.price} photo={s.photo}
-                    onOpen={s.photo ? (name, price, photo) => openModal(name, price, photo) : undefined} />
+                  <PriceRow key={s.name} item={s}
+                    onOpen={s.photo ? (i) => openModal(i, d.steaks) : undefined} />
                 ))}
               </div>
               <p className="nm-steak-note">{d.steakNote}</p>
@@ -457,7 +498,7 @@ export default function MenuClient({ lang = 'en' }: { lang?: 'en' | 'es' }) {
               <div className="nm-grid">
                 {d.vegetarian.map((item) => (
                   <MenuCard key={item.name} item={item}
-                    onOpen={item.photo ? (i) => openModal(i.name, i.price, i.photo!, i.desc) : undefined} />
+                    onOpen={item.photo ? (i) => openModal(i, d.vegetarian) : undefined} />
                 ))}
               </div>
             </section>
@@ -467,7 +508,7 @@ export default function MenuClient({ lang = 'en' }: { lang?: 'en' | 'es' }) {
               <div className="nm-grid">
                 {d.costaRica.map((item) => (
                   <MenuCard key={item.name} item={item}
-                    onOpen={item.photo ? (i) => openModal(i.name, i.price, i.photo!, i.desc) : undefined} />
+                    onOpen={item.photo ? (i) => openModal(i, d.costaRica) : undefined} />
                 ))}
               </div>
             </section>
@@ -478,14 +519,11 @@ export default function MenuClient({ lang = 'en' }: { lang?: 'en' | 'es' }) {
                 {d.desserts.map((item) => (
                   <div key={item.name}
                     className={`nm-dessert-item${item.photo ? ' nm-card-clickable' : ''}`}
-                    onClick={item.photo ? () => openModal(item.name, item.price, item.photo!) : undefined}
+                    onClick={item.photo ? () => openModal(item, d.desserts) : undefined}
                     role={item.photo ? 'button' : undefined}
                     tabIndex={item.photo ? 0 : undefined}
                   >
-                    <span className="nm-dessert-name">
-                      {item.name}
-                      {item.photo && <span className="nm-card-photo-hint">📷</span>}
-                    </span>
+                    <span className="nm-dessert-name">{item.name}</span>
                     <span className="nm-dessert-price">{item.price}</span>
                   </div>
                 ))}
