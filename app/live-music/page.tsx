@@ -230,7 +230,7 @@ export default async function LiveMusicPage() {
             <div className="divider-line" style={{ margin: '0 auto 1.25rem' }}></div>
             <p className="lm-artists-sub">Local and international talent on our stage</p>
           </div>
-          <ArtistsGrid artists={ARTISTS} lang="en" />
+          <ArtistsGrid artists={ARTISTS} />
         </div>
       </section>
 

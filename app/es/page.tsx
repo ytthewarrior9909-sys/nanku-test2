@@ -485,36 +485,7 @@ export default function HomePageES() {
       {/* REVIEWS */}
       <section id="reviews" className="reviews-section">
         <div className="reviews-bg"></div>
-        <div className="reviews-inner container">
-          <div className="reviews-header">
-            <span className="section-label" style={{ marginBottom: '0.75rem' }}>Opiniones de Huéspedes</span>
-            <h2 className="section-title">Lo Que Dicen Nuestros Clientes</h2>
-            <div className="section-divider"></div>
-            <div className="reviews-stars">
-              <div className="star-row">
-                {[...Array(5)].map((_, i) => (
-                  <svg key={i} width="22" height="22" viewBox="0 0 24 24" fill="#D4A853" stroke="#D4A853" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
-                ))}
-              </div>
-              <span className="reviews-rating">4.8</span>
-              <span className="reviews-count">/ 5 · 200+ Reseñas</span>
-            </div>
-            <p className="reviews-desc">Reseñas reales de huéspedes que han vivido la experiencia Nanku.</p>
-          </div>
-
-          <ReviewsScroll />
-
-          <div className="reviews-cta">
-            <a
-              href="https://www.tripadvisor.es/Restaurant_Review-g309226-d7273982-Reviews-Restaurante_Nanku-La_Fortuna_de_San_Carlos_Arenal_Volcano_National_Park_Province_.html"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-outline-gold"
-            >
-              Dejar una Reseña
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
-            </a>
-          </div>
+        <ReviewsScroll lang="es" />
         </div>
       </section>
 

@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
 
 export interface Artist {
   name: string
@@ -11,11 +10,8 @@ export interface Artist {
   bio: string
 }
 
-export default function ArtistsGrid({ artists, lang = 'en' }: { artists: Artist[]; lang?: 'en' | 'es' }) {
+export default function ArtistsGrid({ artists }: { artists: Artist[] }) {
   const [selected, setSelected] = useState<Artist | null>(null)
-
-  const reserveHref = lang === 'es' ? '/es#reservations' : '/#reservations'
-  const reserveLabel = lang === 'es' ? 'Reservar para Noche de Música' : 'Reserve for Music Night'
 
   return (
     <>
@@ -74,11 +70,6 @@ export default function ArtistsGrid({ artists, lang = 'en' }: { artists: Artist[
                 <h2 className="am-name">{selected.name}</h2>
                 <div className="am-divider"></div>
                 <p className="am-bio">{selected.bio}</p>
-                <div className="am-reserve">
-                  <Link href={reserveHref} className="am-reserve-btn" onClick={() => setSelected(null)}>
-                    {reserveLabel}
-                  </Link>
-                </div>
               </div>
             </div>
           </div>

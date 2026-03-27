@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 
-export default function ReviewsScroll() {
+export default function ReviewsScroll({ lang = 'en' }: { lang?: 'en' | 'es' }) {
   const wrapRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -28,8 +28,12 @@ export default function ReviewsScroll() {
       style={{ opacity: 0, transform: 'translateY(50px)', transition: 'opacity 0.8s ease-out, transform 0.8s ease-out' }}
     >
       <div className="reviews-header">
-        <span className="section-label" style={{ marginBottom: '0.75rem' }}>Guest Reviews</span>
-        <h2 className="section-title">What Our Guests Say</h2>
+        <span className="section-label" style={{ marginBottom: '0.75rem' }}>
+          {lang === 'es' ? 'Opiniones de Huéspedes' : 'Guest Reviews'}
+        </span>
+        <h2 className="section-title">
+          {lang === 'es' ? 'Lo Que Dicen Nuestros Clientes' : 'What Our Guests Say'}
+        </h2>
         <div className="section-divider"></div>
         <div className="reviews-stars">
           <div className="star-row">
@@ -40,9 +44,15 @@ export default function ReviewsScroll() {
             ))}
           </div>
           <span className="reviews-rating">4.8</span>
-          <span className="reviews-count">/ 5 · 200+ Reviews</span>
+          <span className="reviews-count">
+            {lang === 'es' ? '/ 5 · 200+ Reseñas' : '/ 5 · 200+ Reviews'}
+          </span>
         </div>
-        <p className="reviews-desc">Real reviews from guests who have experienced Nanku.</p>
+        <p className="reviews-desc">
+          {lang === 'es'
+            ? 'Reseñas reales de huéspedes que han vivido la experiencia Nanku.'
+            : 'Real reviews from guests who have experienced Nanku.'}
+        </p>
       </div>
 
       <div className="tst-columns-wrap" role="region" aria-label="Guest testimonials">
@@ -191,7 +201,7 @@ export default function ReviewsScroll() {
           rel="noopener noreferrer"
           className="btn-outline-gold"
         >
-          Leave a Review
+          {lang === 'es' ? 'Dejar una Reseña' : 'Leave a Review'}
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
             <polyline points="15 3 21 3 21 9" />
