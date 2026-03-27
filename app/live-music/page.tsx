@@ -4,6 +4,9 @@ import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import WhatsAppButton from '@/components/WhatsAppButton'
+import { createClient } from '@supabase/supabase-js'
+
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Live Music',
@@ -11,7 +14,71 @@ export const metadata: Metadata = {
     'Live music every Monday and Saturday at Nanku Tropical Bar & Steakhouse in La Fortuna, Costa Rica. Local and international artists from 7:00 PM.',
 }
 
-export default function LiveMusicPage() {
+type ScheduleDay = { id: string; day_of_week: string; is_active: boolean; event_label: string; start_time: string; sort_order: number }
+type WeeklyEvent  = { id: string; title: string; subtitle: string | null; image_url: string | null; cta_link: string | null; cta_text: string | null; is_active: boolean; sort_order: number }
+
+const DEFAULT_SCHEDULE: ScheduleDay[] = [
+  { id: '1', day_of_week: 'Monday',    is_active: true,  event_label: 'Live Band',                 start_time: '7:00 PM',    sort_order: 1 },
+  { id: '2', day_of_week: 'Tuesday',   is_active: false, event_label: 'Curated tropical playlist', start_time: 'All evening',sort_order: 2 },
+  { id: '3', day_of_week: 'Wednesday', is_active: false, event_label: 'Curated tropical playlist', start_time: 'All evening',sort_order: 3 },
+  { id: '4', day_of_week: 'Thursday',  is_active: false, event_label: 'Curated tropical playlist', start_time: 'All evening',sort_order: 4 },
+  { id: '5', day_of_week: 'Friday',    is_active: false, event_label: 'Curated tropical playlist', start_time: 'All evening',sort_order: 5 },
+  { id: '6', day_of_week: 'Saturday',  is_active: true,  event_label: 'Live Band',                 start_time: '7:00 PM',    sort_order: 6 },
+  { id: '7', day_of_week: 'Sunday',    is_active: false, event_label: 'Curated tropical playlist', start_time: 'All evening',sort_order: 7 },
+]
+
+const ARTISTS = [
+  {
+    name: 'Andrés Rojas',
+    label: 'Rojas Blues',
+    photo: 'https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c5e2304a4efae1be15c031.jpeg',
+    bio: 'Costa Rican singer and guitarist blending rock, pop, and Latin classics. Lead vocalist of Curandera with over 20 years of experience. Influenced by Pink Floyd, Queen, Santana, and Maná.',
+  },
+  {
+    name: 'Esteban Calero',
+    label: 'Latin Loop Show',
+    photo: 'https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c5e230e24981c10d2161c9.jpeg',
+    bio: 'Versatile musician known for his Latin sound and live loop pedal performances. Delivers full live arrangements in real time, adapting seamlessly to every atmosphere.',
+  },
+  {
+    name: 'Chris Charía',
+    label: 'Rock & Trova',
+    photo: 'https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c5e2305ebd49077774f391.jpeg',
+    bio: 'Singer-songwriter with 31 years of national and international experience. Covers classic rock in Spanish and English, Latin music, trova, bolero, and reggae.',
+  },
+  {
+    name: 'Bryan Villalobos',
+    label: 'Latin Loop Show',
+    photo: 'https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c5e23081e6bcccfa756c06.jpeg',
+    bio: 'Costa Rican musician blending Latin rhythms with global hits completely live. Performs at weddings, hotels, and private events across Costa Rica with original music on digital platforms.',
+  },
+  {
+    name: 'Nathan Bolívar',
+    label: 'Live Loop Artist',
+    photo: 'https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c5e2309619ac8584977e7d.jpeg',
+    bio: 'Artist who builds songs in real time — layer by layer — merging rhythms, melodies, and voice. Influenced by funk, pop, and Latin sounds with a passion for music since age 12.',
+  },
+]
+
+export default async function LiveMusicPage() {
+  let schedule: ScheduleDay[] = DEFAULT_SCHEDULE
+  let weeklyEvents: WeeklyEvent[] = []
+
+  try {
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
+    const [{ data: schedData }, { data: eventsData }] = await Promise.all([
+      supabase.from('live_music_schedule').select('*').order('sort_order'),
+      supabase.from('weekly_events').select('*').eq('is_active', true).order('sort_order'),
+    ])
+    if (schedData && schedData.length > 0) schedule = schedData
+    weeklyEvents = eventsData ?? []
+  } catch {
+    // use defaults
+  }
+
   return (
     <>
       <Navbar lang="en" activePage="Live Music" />
@@ -20,7 +87,7 @@ export default function LiveMusicPage() {
       <section className="lm-hero">
         <div
           className="lm-hero-bg"
-          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=1920&q=85')" }}
+          style={{ backgroundImage: "url('https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c5e230e24981c10d2161c9.jpeg')" }}
         ></div>
         <div className="lm-hero-overlay"></div>
         <div className="lm-hero-glow"></div>
@@ -36,8 +103,7 @@ export default function LiveMusicPage() {
           <p className="lm-hero-desc">Great food, delicious cocktails, and unforgettable live performances starting at 7:00 PM</p>
           <a
             href="https://wa.me/50624790707?text=Hello%21%20I%20would%20like%20to%20make%20a%20reservation%20at%20Nanku%20for%20a%20live%20music%20night."
-            target="_blank"
-            rel="noopener noreferrer"
+            target="_blank" rel="noopener noreferrer"
             className="btn-primary lm-hero-btn"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -68,30 +134,22 @@ export default function LiveMusicPage() {
             <div className="divider-line" style={{ margin: '0 auto 1.25rem' }}></div>
           </div>
           <div className="lm-schedule-grid fade-up">
-            {[
-              { day: 'Monday', live: true, event: 'Live Band', time: '7:00 PM' },
-              { day: 'Tuesday', live: false, event: 'Curated tropical playlist', time: 'All evening' },
-              { day: 'Wednesday', live: false, event: 'Curated tropical playlist', time: 'All evening' },
-              { day: 'Thursday', live: false, event: 'Curated tropical playlist', time: 'All evening' },
-              { day: 'Friday', live: false, event: 'Curated tropical playlist', time: 'All evening' },
-              { day: 'Saturday', live: true, event: 'Live Band', time: '7:00 PM' },
-              { day: 'Sunday', live: false, event: 'Curated tropical playlist', time: 'All evening' },
-            ].map((d) => (
-              <div key={d.day} className={`schedule-day${d.live ? ' live' : ''}`}>
-                {d.live && <span className="schedule-live-badge">LIVE</span>}
-                <span className={`schedule-day-name${d.live ? ' live' : ''}`}>{d.day}</span>
-                <div className={`schedule-icon${d.live ? ' live' : ''}`}>
-                  {d.live ? (
+            {schedule.map(d => (
+              <div key={d.day_of_week} className={`schedule-day${d.is_active ? ' live' : ''}`}>
+                {d.is_active && <span className="schedule-live-badge">LIVE</span>}
+                <span className={`schedule-day-name${d.is_active ? ' live' : ''}`}>{d.day_of_week}</span>
+                <div className={`schedule-icon${d.is_active ? ' live' : ''}`}>
+                  {d.is_active ? (
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5"><path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" /></svg>
                   ) : (
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5"><path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" /></svg>
                   )}
                 </div>
                 <div className="schedule-info">
-                  <p className={`schedule-event${d.live ? ' live' : ''}`}>{d.event}</p>
-                  <div className={`schedule-time${d.live ? ' live' : ''}`}>
+                  <p className={`schedule-event${d.is_active ? ' live' : ''}`}>{d.event_label}</p>
+                  <div className={`schedule-time${d.is_active ? ' live' : ''}`}>
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
-                    {d.time}
+                    {d.start_time}
                   </div>
                 </div>
               </div>
@@ -101,7 +159,63 @@ export default function LiveMusicPage() {
         </div>
       </section>
 
-      {/* ARTISTS */}
+      {/* WEEKLY EVENTS (dynamic, hidden if none) */}
+      {weeklyEvents.length > 0 && (
+        <section style={{ background: '#0f0f0f', padding: '5rem 0', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 60% 50% at 50% 0%, rgba(232,117,26,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
+          <div className="container" style={{ position: 'relative' }}>
+            <div className="fade-up" style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+              <span className="section-label">This Week</span>
+              <h2 className="section-title" style={{ marginTop: '0.5rem' }}>Weekly Events</h2>
+              <div className="divider-line" style={{ margin: '1rem auto 0' }}></div>
+            </div>
+            <div
+              className="fade-up"
+              style={{
+                display: 'grid',
+                gridTemplateColumns: weeklyEvents.length === 1 ? 'minmax(0,680px)' : 'repeat(auto-fit,minmax(280px,1fr))',
+                gap: '1.5rem',
+                justifyContent: weeklyEvents.length === 1 ? 'center' : undefined,
+                margin: weeklyEvents.length === 1 ? '0 auto' : undefined,
+              }}
+            >
+              {weeklyEvents.map(ev => (
+                <div
+                  key={ev.id}
+                  style={{ background: '#1a1a1a', borderRadius: '16px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column' }}
+                >
+                  {ev.image_url && (
+                    <div style={{ height: '220px', overflow: 'hidden', flexShrink: 0 }}>
+                      <img
+                        src={ev.image_url}
+                        alt={ev.title}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                    </div>
+                  )}
+                  <div style={{ padding: '1.75rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    <h3 className="font-playfair" style={{ color: '#fff', fontSize: 'clamp(1.25rem,3vw,1.75rem)', lineHeight: 1.3, margin: 0 }}>{ev.title}</h3>
+                    {ev.subtitle && (
+                      <p className="font-lato" style={{ color: '#b0b0b0', fontSize: '0.95rem', lineHeight: 1.7, margin: 0 }}>{ev.subtitle}</p>
+                    )}
+                    {ev.cta_text && (
+                      <div style={{ marginTop: 'auto', paddingTop: '0.5rem' }}>
+                        {ev.cta_link ? (
+                          <a href={ev.cta_link} className="btn-outline-orange" style={{ display: 'inline-flex' }}>{ev.cta_text}</a>
+                        ) : (
+                          <span className="btn-outline-orange" style={{ display: 'inline-flex', cursor: 'default' }}>{ev.cta_text}</span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* FEATURED ARTISTS */}
       <section className="lm-artists" id="artistsSection">
         <div className="lm-artists-container">
           <div className="lm-artists-header fade-up">
@@ -116,20 +230,24 @@ export default function LiveMusicPage() {
             <p className="lm-artists-sub">Local and international talent on our stage</p>
           </div>
           <div className="lm-artists-grid fade-up">
-            {[
-              { src: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=600&q=80', name: 'Cafe Soul' },
-              { src: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80', name: 'Chalo Gonzalez' },
-              { src: 'https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?w=600&q=80', name: 'Duo Arkot' },
-              { src: 'https://images.unsplash.com/photo-1516924962150-b3c3e991bcc0?w=600&q=80', name: 'Josue Orozco' },
-              { src: 'https://images.unsplash.com/photo-1508854710579-5cecc3a9ff17?w=600&q=80', name: 'Mechas (Cadejo)' },
-            ].map((artist) => (
+            {ARTISTS.map(artist => (
               <div key={artist.name} className="artist-card">
-                <Image src={artist.src} alt={artist.name} loading="lazy" width={600} height={400} className="artist-img" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <Image
+                  src={artist.photo}
+                  alt={artist.name}
+                  loading="lazy"
+                  width={600}
+                  height={750}
+                  className="artist-img"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center' }}
+                />
                 <div className="artist-overlay"></div>
                 <div className="artist-hover-overlay"></div>
                 <div className="artist-info">
                   <h3 className="artist-name">{artist.name}</h3>
+                  <p style={{ color: '#E8751A', fontSize: '0.75rem', fontFamily: 'Montserrat, sans-serif', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', margin: '0.25rem 0 0.5rem' }}>{artist.label}</p>
                   <div className="artist-line"></div>
+                  <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.8rem', fontFamily: 'Lato, sans-serif', lineHeight: 1.5, marginTop: '0.5rem', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{artist.bio}</p>
                 </div>
               </div>
             ))}
@@ -156,9 +274,9 @@ export default function LiveMusicPage() {
               </p>
             </div>
             <div className="lm-experience-photos">
-              <Image src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=600&q=80" alt="Cocktails" loading="lazy" width={600} height={400} className="lm-exp-photo" style={{ width: '100%', objectFit: 'cover' }} />
-              <Image src="https://images.unsplash.com/photo-1544025162-d76694265947?w=600&q=80" alt="Steaks" loading="lazy" width={600} height={400} className="lm-exp-photo" style={{ width: '100%', objectFit: 'cover' }} />
-              <Image src="https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=600&q=80" alt="Live Music" loading="lazy" width={600} height={400} className="lm-exp-photo full" style={{ width: '100%', objectFit: 'cover' }} />
+              <Image src="https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c5e484e24981fcd12193a5.jpg" alt="Cocktails" loading="lazy" width={600} height={400} className="lm-exp-photo" style={{ width: '100%', objectFit: 'cover' }} />
+              <Image src="https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c5edb5146bc5f778eaab9e.jpg" alt="Steaks" loading="lazy" width={600} height={400} className="lm-exp-photo" style={{ width: '100%', objectFit: 'cover' }} />
+              <Image src="https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c5e230e24981c10d2161c9.jpeg" alt="Live Music" loading="lazy" width={600} height={400} className="lm-exp-photo full" style={{ width: '100%', objectFit: 'cover', objectPosition: 'top center' }} />
             </div>
           </div>
           <div className="lm-feature-cards fade-up">
@@ -208,8 +326,7 @@ export default function LiveMusicPage() {
             <div className="lm-cta-buttons">
               <a
                 href="https://wa.me/50624790707?text=Hello%21%20I%20would%20like%20to%20make%20a%20reservation%20at%20Nanku%20for%20a%20live%20music%20night."
-                target="_blank"
-                rel="noopener noreferrer"
+                target="_blank" rel="noopener noreferrer"
                 className="btn-white-orange"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">

@@ -1,8 +1,12 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import WhatsAppButton from '@/components/WhatsAppButton'
+import { createClient } from '@supabase/supabase-js'
+
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Música en Vivo',
@@ -10,7 +14,88 @@ export const metadata: Metadata = {
     'Música en vivo cada lunes y sábado en Nanku Tropical Bar & Steakhouse en La Fortuna, Costa Rica. Artistas locales e internacionales desde las 7:00 PM.',
 }
 
-export default function LiveMusicPageES() {
+type ScheduleDay = { id: string; day_of_week: string; is_active: boolean; event_label: string; start_time: string; sort_order: number }
+type WeeklyEvent  = { id: string; title: string; subtitle: string | null; image_url: string | null; cta_link: string | null; cta_text: string | null; is_active: boolean; sort_order: number }
+
+const DAY_NAMES: Record<string, string> = {
+  Monday: 'Lunes', Tuesday: 'Martes', Wednesday: 'Miércoles',
+  Thursday: 'Jueves', Friday: 'Viernes', Saturday: 'Sábado', Sunday: 'Domingo',
+}
+
+const DEFAULT_SCHEDULE: ScheduleDay[] = [
+  { id: '1', day_of_week: 'Monday',    is_active: true,  event_label: 'Banda en Vivo',        start_time: '7:00 PM',      sort_order: 1 },
+  { id: '2', day_of_week: 'Tuesday',   is_active: false, event_label: 'Playlist tropical',    start_time: 'Toda la noche', sort_order: 2 },
+  { id: '3', day_of_week: 'Wednesday', is_active: false, event_label: 'Playlist tropical',    start_time: 'Toda la noche', sort_order: 3 },
+  { id: '4', day_of_week: 'Thursday',  is_active: false, event_label: 'Playlist tropical',    start_time: 'Toda la noche', sort_order: 4 },
+  { id: '5', day_of_week: 'Friday',    is_active: false, event_label: 'Playlist tropical',    start_time: 'Toda la noche', sort_order: 5 },
+  { id: '6', day_of_week: 'Saturday',  is_active: true,  event_label: 'Banda en Vivo',        start_time: '7:00 PM',      sort_order: 6 },
+  { id: '7', day_of_week: 'Sunday',    is_active: false, event_label: 'Playlist tropical',    start_time: 'Toda la noche', sort_order: 7 },
+]
+
+const ARTISTS = [
+  {
+    name: 'Andrés Rojas',
+    label: 'Rojas Blues',
+    photo: 'https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c5e2304a4efae1be15c031.jpeg',
+    bio: 'Cantante y guitarrista costarricense que mezcla rock, pop y clásicos latinos. Vocalista principal de Curandera con más de 20 años de experiencia. Influenciado por Pink Floyd, Queen, Santana y Maná.',
+  },
+  {
+    name: 'Esteban Calero',
+    label: 'Latin Loop Show',
+    photo: 'https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c5e230e24981c10d2161c9.jpeg',
+    bio: 'Músico versátil conocido por su sonido latino y sus actuaciones en vivo con loop pedal. Entrega arreglos completamente en vivo en tiempo real, adaptándose a cada atmósfera.',
+  },
+  {
+    name: 'Chris Charía',
+    label: 'Rock & Trova',
+    photo: 'https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c5e2305ebd49077774f391.jpeg',
+    bio: 'Cantautor con 31 años de experiencia nacional e internacional. Interpreta rock clásico en español e inglés, música latina, trova, bolero y reggae.',
+  },
+  {
+    name: 'Bryan Villalobos',
+    label: 'Latin Loop Show',
+    photo: 'https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c5e23081e6bcccfa756c06.jpeg',
+    bio: 'Músico costarricense que mezcla ritmos latinos con éxitos mundiales completamente en vivo. Actúa en bodas, hoteles y eventos privados en toda Costa Rica con música original en plataformas digitales.',
+  },
+  {
+    name: 'Nathan Bolívar',
+    label: 'Live Loop Artist',
+    photo: 'https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c5e2309619ac8584977e7d.jpeg',
+    bio: 'Artista que construye canciones en tiempo real, capa a capa, fusionando ritmos, melodías y voz. Influenciado por el funk, pop y sonidos latinos con pasión por la música desde los 12 años.',
+  },
+]
+
+function translateLabel(label: string): string {
+  if (label === 'Live Band') return 'Banda en Vivo'
+  if (label === 'Curated tropical playlist') return 'Playlist tropical'
+  if (label.toLowerCase().includes('all evening')) return 'Toda la noche'
+  return label
+}
+
+function translateTime(time: string): string {
+  if (time === 'All evening') return 'Toda la noche'
+  return time
+}
+
+export default async function LiveMusicPageES() {
+  let schedule: ScheduleDay[] = DEFAULT_SCHEDULE
+  let weeklyEvents: WeeklyEvent[] = []
+
+  try {
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
+    const [{ data: schedData }, { data: eventsData }] = await Promise.all([
+      supabase.from('live_music_schedule').select('*').order('sort_order'),
+      supabase.from('weekly_events').select('*').eq('is_active', true).order('sort_order'),
+    ])
+    if (schedData && schedData.length > 0) schedule = schedData
+    weeklyEvents = eventsData ?? []
+  } catch {
+    // usar valores por defecto
+  }
+
   return (
     <>
       <Navbar lang="es" activePage="LiveMusic" />
@@ -19,7 +104,7 @@ export default function LiveMusicPageES() {
       <section className="lm-hero">
         <div
           className="lm-hero-bg"
-          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=1920&q=85')" }}
+          style={{ backgroundImage: "url('https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c5e230e24981c10d2161c9.jpeg')" }}
         ></div>
         <div className="lm-hero-overlay"></div>
         <div className="lm-hero-glow"></div>
@@ -67,126 +152,88 @@ export default function LiveMusicPageES() {
             <div className="divider-line" style={{ margin: '0 auto 1.25rem' }}></div>
           </div>
           <div className="lm-schedule-grid fade-up">
-            {/* Lunes - EN VIVO */}
-            <div className="schedule-day live">
-              <span className="schedule-live-badge">EN VIVO</span>
-              <span className="schedule-day-name live">Lunes</span>
-              <div className="schedule-icon live">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5">
-                  <path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" />
-                </svg>
-              </div>
-              <div className="schedule-info">
-                <p className="schedule-event live">Banda en Vivo</p>
-                <div className="schedule-time live">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
-                  7:00 PM
+            {schedule.map(d => (
+              <div key={d.day_of_week} className={`schedule-day${d.is_active ? ' live' : ''}`}>
+                {d.is_active && <span className="schedule-live-badge">EN VIVO</span>}
+                <span className={`schedule-day-name${d.is_active ? ' live' : ''}`}>{DAY_NAMES[d.day_of_week] ?? d.day_of_week}</span>
+                <div className={`schedule-icon${d.is_active ? ' live' : ''}`}>
+                  {d.is_active ? (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5"><path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" /></svg>
+                  ) : (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5"><path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" /></svg>
+                  )}
+                </div>
+                <div className="schedule-info">
+                  <p className={`schedule-event${d.is_active ? ' live' : ''}`}>{translateLabel(d.event_label)}</p>
+                  <div className={`schedule-time${d.is_active ? ' live' : ''}`}>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
+                    {translateTime(d.start_time)}
+                  </div>
                 </div>
               </div>
-            </div>
-            {/* Martes */}
-            <div className="schedule-day">
-              <span className="schedule-day-name">Martes</span>
-              <div className="schedule-icon">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5">
-                  <path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" />
-                </svg>
-              </div>
-              <div className="schedule-info">
-                <p className="schedule-event">Playlist tropical</p>
-                <div className="schedule-time">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
-                  Toda la noche
-                </div>
-              </div>
-            </div>
-            {/* Miércoles */}
-            <div className="schedule-day">
-              <span className="schedule-day-name">Miércoles</span>
-              <div className="schedule-icon">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5">
-                  <path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" />
-                </svg>
-              </div>
-              <div className="schedule-info">
-                <p className="schedule-event">Playlist tropical</p>
-                <div className="schedule-time">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
-                  Toda la noche
-                </div>
-              </div>
-            </div>
-            {/* Jueves */}
-            <div className="schedule-day">
-              <span className="schedule-day-name">Jueves</span>
-              <div className="schedule-icon">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5">
-                  <path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" />
-                </svg>
-              </div>
-              <div className="schedule-info">
-                <p className="schedule-event">Playlist tropical</p>
-                <div className="schedule-time">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
-                  Toda la noche
-                </div>
-              </div>
-            </div>
-            {/* Viernes */}
-            <div className="schedule-day">
-              <span className="schedule-day-name">Viernes</span>
-              <div className="schedule-icon">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5">
-                  <path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" />
-                </svg>
-              </div>
-              <div className="schedule-info">
-                <p className="schedule-event">Playlist tropical</p>
-                <div className="schedule-time">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
-                  Toda la noche
-                </div>
-              </div>
-            </div>
-            {/* Sábado - EN VIVO */}
-            <div className="schedule-day live">
-              <span className="schedule-live-badge">EN VIVO</span>
-              <span className="schedule-day-name live">Sábado</span>
-              <div className="schedule-icon live">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5">
-                  <path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" />
-                </svg>
-              </div>
-              <div className="schedule-info">
-                <p className="schedule-event live">Banda en Vivo</p>
-                <div className="schedule-time live">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
-                  7:00 PM
-                </div>
-              </div>
-            </div>
-            {/* Domingo */}
-            <div className="schedule-day">
-              <span className="schedule-day-name">Domingo</span>
-              <div className="schedule-icon">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5">
-                  <path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" />
-                </svg>
-              </div>
-              <div className="schedule-info">
-                <p className="schedule-event">Playlist tropical</p>
-                <div className="schedule-time">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
-                  Toda la noche
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
           <p className="lm-schedule-note fade-up">El horario puede variar. Síguenos en Instagram para actualizaciones semanales.</p>
         </div>
       </section>
 
-      {/* ARTISTAS */}
+      {/* EVENTOS SEMANALES (dinámico, oculto si no hay ninguno) */}
+      {weeklyEvents.length > 0 && (
+        <section style={{ background: '#0f0f0f', padding: '5rem 0', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 60% 50% at 50% 0%, rgba(232,117,26,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
+          <div className="container" style={{ position: 'relative' }}>
+            <div className="fade-up" style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+              <span className="section-label">Esta Semana</span>
+              <h2 className="section-title" style={{ marginTop: '0.5rem' }}>Eventos Semanales</h2>
+              <div className="divider-line" style={{ margin: '1rem auto 0' }}></div>
+            </div>
+            <div
+              className="fade-up"
+              style={{
+                display: 'grid',
+                gridTemplateColumns: weeklyEvents.length === 1 ? 'minmax(0,680px)' : 'repeat(auto-fit,minmax(280px,1fr))',
+                gap: '1.5rem',
+                justifyContent: weeklyEvents.length === 1 ? 'center' : undefined,
+                margin: weeklyEvents.length === 1 ? '0 auto' : undefined,
+              }}
+            >
+              {weeklyEvents.map(ev => (
+                <div
+                  key={ev.id}
+                  style={{ background: '#1a1a1a', borderRadius: '16px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column' }}
+                >
+                  {ev.image_url && (
+                    <div style={{ height: '220px', overflow: 'hidden', flexShrink: 0 }}>
+                      <img
+                        src={ev.image_url}
+                        alt={ev.title}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                    </div>
+                  )}
+                  <div style={{ padding: '1.75rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    <h3 className="font-playfair" style={{ color: '#fff', fontSize: 'clamp(1.25rem,3vw,1.75rem)', lineHeight: 1.3, margin: 0 }}>{ev.title}</h3>
+                    {ev.subtitle && (
+                      <p className="font-lato" style={{ color: '#b0b0b0', fontSize: '0.95rem', lineHeight: 1.7, margin: 0 }}>{ev.subtitle}</p>
+                    )}
+                    {ev.cta_text && (
+                      <div style={{ marginTop: 'auto', paddingTop: '0.5rem' }}>
+                        {ev.cta_link ? (
+                          <a href={ev.cta_link} className="btn-outline-orange" style={{ display: 'inline-flex' }}>{ev.cta_text}</a>
+                        ) : (
+                          <span className="btn-outline-orange" style={{ display: 'inline-flex', cursor: 'default' }}>{ev.cta_text}</span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ARTISTAS DESTACADOS */}
       <section className="lm-artists" id="artistsSection">
         <div className="lm-artists-container">
           <div className="lm-artists-header fade-up">
@@ -201,36 +248,27 @@ export default function LiveMusicPageES() {
             <p className="lm-artists-sub">Talento local e internacional en nuestro escenario</p>
           </div>
           <div className="lm-artists-grid fade-up">
-            <div className="artist-card">
-              <img src="https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=600&q=80" alt="Cafe Soul" loading="lazy" className="artist-img" />
-              <div className="artist-overlay"></div>
-              <div className="artist-hover-overlay"></div>
-              <div className="artist-info"><h3 className="artist-name">Cafe Soul</h3><div className="artist-line"></div></div>
-            </div>
-            <div className="artist-card">
-              <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80" alt="Chalo Gonzalez" loading="lazy" className="artist-img" />
-              <div className="artist-overlay"></div>
-              <div className="artist-hover-overlay"></div>
-              <div className="artist-info"><h3 className="artist-name">Chalo Gonzalez</h3><div className="artist-line"></div></div>
-            </div>
-            <div className="artist-card">
-              <img src="https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?w=600&q=80" alt="Duo Arkot" loading="lazy" className="artist-img" />
-              <div className="artist-overlay"></div>
-              <div className="artist-hover-overlay"></div>
-              <div className="artist-info"><h3 className="artist-name">Duo Arkot</h3><div className="artist-line"></div></div>
-            </div>
-            <div className="artist-card">
-              <img src="https://images.unsplash.com/photo-1516924962150-b3c3e991bcc0?w=600&q=80" alt="Josue Orozco" loading="lazy" className="artist-img" />
-              <div className="artist-overlay"></div>
-              <div className="artist-hover-overlay"></div>
-              <div className="artist-info"><h3 className="artist-name">Josue Orozco</h3><div className="artist-line"></div></div>
-            </div>
-            <div className="artist-card">
-              <img src="https://images.unsplash.com/photo-1508854710579-5cecc3a9ff17?w=600&q=80" alt="Mechas (Cadejo)" loading="lazy" className="artist-img" />
-              <div className="artist-overlay"></div>
-              <div className="artist-hover-overlay"></div>
-              <div className="artist-info"><h3 className="artist-name">Mechas (Cadejo)</h3><div className="artist-line"></div></div>
-            </div>
+            {ARTISTS.map(artist => (
+              <div key={artist.name} className="artist-card">
+                <Image
+                  src={artist.photo}
+                  alt={artist.name}
+                  loading="lazy"
+                  width={600}
+                  height={750}
+                  className="artist-img"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center' }}
+                />
+                <div className="artist-overlay"></div>
+                <div className="artist-hover-overlay"></div>
+                <div className="artist-info">
+                  <h3 className="artist-name">{artist.name}</h3>
+                  <p style={{ color: '#E8751A', fontSize: '0.75rem', fontFamily: 'Montserrat, sans-serif', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', margin: '0.25rem 0 0.5rem' }}>{artist.label}</p>
+                  <div className="artist-line"></div>
+                  <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.8rem', fontFamily: 'Lato, sans-serif', lineHeight: 1.5, marginTop: '0.5rem', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{artist.bio}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -251,9 +289,9 @@ export default function LiveMusicPageES() {
               </p>
             </div>
             <div className="lm-experience-photos">
-              <img src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=600&q=80" alt="Cócteles" loading="lazy" className="lm-exp-photo" />
-              <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=600&q=80" alt="Cortes" loading="lazy" className="lm-exp-photo" />
-              <img src="https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=600&q=80" alt="Música en Vivo" loading="lazy" className="lm-exp-photo full" />
+              <Image src="https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c5e484e24981fcd12193a5.jpg" alt="Cócteles" loading="lazy" width={600} height={400} className="lm-exp-photo" style={{ width: '100%', objectFit: 'cover' }} />
+              <Image src="https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c5edb5146bc5f778eaab9e.jpg" alt="Cortes" loading="lazy" width={600} height={400} className="lm-exp-photo" style={{ width: '100%', objectFit: 'cover' }} />
+              <Image src="https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c5e230e24981c10d2161c9.jpeg" alt="Música en Vivo" loading="lazy" width={600} height={400} className="lm-exp-photo full" style={{ width: '100%', objectFit: 'cover', objectPosition: 'top center' }} />
             </div>
           </div>
           <div className="lm-feature-cards fade-up">

@@ -87,7 +87,7 @@ export default function HomePage() {
                 <div className="exp-img-side">
                   <div className="exp-img-frame"></div>
                   <div className="exp-img-wrap">
-                    <Image src="https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=800&q=80" alt="Live Music" width={800} height={600} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <Image src="https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c5e230e24981c10d2161c9.jpeg" alt="Live Music" width={800} height={600} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center' }} />
                     <div className="exp-img-gradient" style={{ background: 'linear-gradient(to right,rgba(17,17,17,0.7) 0%,transparent 50%),linear-gradient(to top,rgba(17,17,17,0.5) 0%,transparent 40%)' }}></div>
                     <div className="exp-img-number" style={{ WebkitTextStroke: '1px rgba(232,117,26,0.25)' }}>01</div>
                   </div>
@@ -116,7 +116,7 @@ export default function HomePage() {
                 <div className="exp-img-side">
                   <div className="exp-img-frame"></div>
                   <div className="exp-img-wrap">
-                    <Image src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=800&q=80" alt="Signature Cocktails" width={800} height={600} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <Image src="https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c5e484e24981fcd12193a5.jpg" alt="Signature Cocktails" width={800} height={600} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     <div className="exp-img-gradient" style={{ background: 'linear-gradient(to left,rgba(17,17,17,0.7) 0%,transparent 50%),linear-gradient(to top,rgba(17,17,17,0.5) 0%,transparent 40%)' }}></div>
                     <div className="exp-img-number" style={{ WebkitTextStroke: '1px rgba(245,166,35,0.25)', left: '1.5rem', right: 'auto' }}>02</div>
                   </div>
@@ -145,7 +145,7 @@ export default function HomePage() {
                 <div className="exp-img-side">
                   <div className="exp-img-frame"></div>
                   <div className="exp-img-wrap">
-                    <Image src="https://images.unsplash.com/photo-1544025162-d76694265947?w=800&q=80" alt="Premium Steaks" width={800} height={600} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <Image src="https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c5edb5146bc5f778eaab9e.jpg" alt="Premium Steaks" width={800} height={600} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     <div className="exp-img-gradient" style={{ background: 'linear-gradient(to right,rgba(17,17,17,0.7) 0%,transparent 50%),linear-gradient(to top,rgba(17,17,17,0.5) 0%,transparent 40%)' }}></div>
                     <div className="exp-img-number" style={{ WebkitTextStroke: '1px rgba(232,117,26,0.25)' }}>03</div>
                   </div>
