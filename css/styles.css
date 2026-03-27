@@ -3830,27 +3830,6 @@ ul { list-style: none; }
   margin-left: 0.1rem;
 }
 
-/* --- Card thumbnail (when photo exists) --- */
-.nm-card-thumb {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16/9;
-  border-radius: 6px 6px 0 0;
-  overflow: hidden;
-  margin: -1rem -1.2rem 0.85rem;
-  width: calc(100% + 2.4rem);
-}
-.nm-card.nm-card-clickable .nm-card-thumb::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.15);
-  transition: background 0.2s;
-}
-.nm-card.nm-card-clickable:hover .nm-card-thumb::after {
-  background: rgba(232,117,26,0.12);
-}
-.nm-card-body { /* wraps top + desc when thumb present */ }
 
 /* --- Photo modal --- */
 .nm-modal-backdrop {
