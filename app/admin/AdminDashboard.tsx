@@ -1,29 +1,27 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import LiveMusicManager, { type ScheduleDay, type WeeklyEvent } from './LiveMusicManager'
+import AdminNav from './components/AdminNav'
+import {
+  type Reservation,
+  type ReservationStatus,
+  STATUS_LABELS,
+  STATUS_STYLES,
+  todayCR,
+  formatDateCR,
+  formatTimeCR,
+  addDays,
+} from '@/lib/reservations'
 
-type Reservation = {
-  id: string
-  name: string
-  email: string
-  phone: string
-  date: string
-  time: string
-  party_size: string
-  status: 'pending' | 'confirmed' | 'cancelled'
-  created_at: string
-  notes?: string
-}
-
-type Filter = 'all' | 'pending' | 'confirmed' | 'cancelled'
 type Tab = 'reservations' | 'live-music'
 
 export default function AdminDashboard({
-  reservations,
-  error,
+  reservations: initialReservations,
+  error: initialError,
   userEmail,
   schedule,
   events,
@@ -35,20 +33,65 @@ export default function AdminDashboard({
   events: WeeklyEvent[]
 }) {
   const router = useRouter()
-  const [filter, setFilter] = useState<Filter>('all')
   const [tab, setTab] = useState<Tab>('reservations')
   const [isPending, startTransition] = useTransition()
+
+  // ── Date navigation ──────────────────────────────────────
+  const [currentDate, setCurrentDate] = useState(todayCR())
+  const [dayReservations, setDayReservations] = useState<Reservation[]>(
+    initialReservations.filter(r => r.date === todayCR())
+  )
+  const [loadingDay, setLoadingDay] = useState(false)
   const [actionLoading, setActionLoading] = useState<string | null>(null)
 
-  const filtered = reservations.filter(r => filter === 'all' ? true : r.status === filter)
-  const counts = {
-    all: reservations.length,
-    pending: reservations.filter(r => r.status === 'pending').length,
-    confirmed: reservations.filter(r => r.status === 'confirmed').length,
-    cancelled: reservations.filter(r => r.status === 'cancelled').length,
+  // ── Zone filter ──────────────────────────────────────────
+  const [zoneFilter, setZoneFilter] = useState<'' | 'salon' | 'terraza'>('')
+
+  const fetchDay = useCallback(async (date: string) => {
+    setLoadingDay(true)
+    try {
+      const supabase = createClient()
+      const { data } = await supabase
+        .from('reservations')
+        .select('*')
+        .eq('date', date)
+        .order('time', { ascending: true })
+      setDayReservations(data ?? [])
+    } finally {
+      setLoadingDay(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    fetchDay(currentDate)
+  }, [currentDate, fetchDay])
+
+  function goDate(n: number) {
+    setCurrentDate(prev => addDays(prev, n))
   }
 
-  async function updateStatus(id: string, status: 'confirmed' | 'cancelled') {
+  // ── Stats ────────────────────────────────────────────────
+  const counts = {
+    total:     dayReservations.length,
+    pending:   dayReservations.filter(r => r.status === 'pending').length,
+    confirmed: dayReservations.filter(r => r.status === 'confirmed').length,
+    cancelled: dayReservations.filter(r => r.status === 'cancelled').length,
+    no_show:   dayReservations.filter(r => r.status === 'no_show').length,
+    pax:       dayReservations
+      .filter(r => r.status !== 'cancelled' && r.status !== 'no_show')
+      .reduce((s, r) => s + (parseInt(r.party_size) || 0), 0),
+  }
+
+  // For Live Music tab badge (all pending)
+  const pendingTotal = initialReservations.filter(r => r.status === 'pending').length
+
+  // ── Filtered rows ────────────────────────────────────────
+  const filteredRows = dayReservations.filter(r =>
+    zoneFilter ? r.zone === zoneFilter : true
+  )
+
+  // ── Actions ──────────────────────────────────────────────
+  async function changeStatus(id: string, status: ReservationStatus) {
     setActionLoading(id + status)
     try {
       const res = await fetch('/api/admin/reservations', {
@@ -56,7 +99,10 @@ export default function AdminDashboard({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, status }),
       })
-      if (res.ok) startTransition(() => router.refresh())
+      if (res.ok) {
+        await fetchDay(currentDate)
+        startTransition(() => router.refresh())
+      }
     } finally {
       setActionLoading(null)
     }
@@ -66,19 +112,6 @@ export default function AdminDashboard({
     const supabase = createClient()
     await supabase.auth.signOut()
     router.push('/admin/login')
-  }
-
-  function formatDate(s: string) {
-    return new Date(s).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-  }
-  function formatCreatedAt(s: string) {
-    return new Date(s).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
-  }
-
-  const statusStyles: Record<string, string> = {
-    pending: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
-    confirmed: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-    cancelled: 'bg-red-500/10 text-red-400 border-red-500/20',
   }
 
   return (
@@ -102,89 +135,126 @@ export default function AdminDashboard({
             </button>
           </div>
         </div>
-      </header>
 
-      {/* Tab navigation */}
-      <div className="border-b border-zinc-800 bg-zinc-900/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex gap-0">
-            {([
-              { id: 'reservations', label: 'Reservations', icon: (
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              )},
-              { id: 'live-music', label: 'Live Music', icon: (
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-              )},
-            ] as { id: Tab; label: string; icon: React.ReactNode }[]).map(t => (
-              <button
-                key={t.id}
-                onClick={() => setTab(t.id)}
-                className={`flex items-center gap-2 px-5 py-3.5 text-sm font-medium border-b-2 transition ${
-                  tab === t.id
-                    ? 'border-orange-500 text-orange-400'
-                    : 'border-transparent text-zinc-400 hover:text-zinc-200'
-                }`}
-              >
-                {t.icon}
-                {t.label}
-                {t.id === 'reservations' && counts.pending > 0 && (
-                  <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-400">
-                    {counts.pending}
-                  </span>
-                )}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* ── Reservations Tab ── */}
-        {tab === 'reservations' && (
-          <>
-            {/* Stats */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-              {(['all', 'pending', 'confirmed', 'cancelled'] as Filter[]).map(f => (
+        {/* Nav */}
+        <div className="border-t border-zinc-800/50 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex gap-0 justify-between">
+            <AdminNav />
+            <div className="flex gap-0">
+              {([
+                { id: 'reservations' as Tab, label: 'Dashboard', icon: (
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                )},
+                { id: 'live-music' as Tab, label: 'Live Music', icon: (
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                )},
+              ]).map(t => (
                 <button
-                  key={f}
-                  onClick={() => setFilter(f)}
-                  className={`rounded-xl border p-4 text-left transition ${
-                    filter === f ? 'border-orange-500/40 bg-orange-500/5' : 'border-zinc-800 bg-zinc-900/50 hover:border-zinc-700'
+                  key={t.id}
+                  onClick={() => setTab(t.id)}
+                  className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition ${
+                    tab === t.id
+                      ? 'border-orange-500 text-orange-400'
+                      : 'border-transparent text-zinc-400 hover:text-zinc-200'
                   }`}
                 >
-                  <div className="text-2xl font-bold text-white">{counts[f]}</div>
-                  <div className={`text-sm mt-0.5 capitalize ${filter === f ? 'text-orange-400' : 'text-zinc-400'}`}>
-                    {f === 'all' ? 'Total' : f}
-                  </div>
+                  {t.icon}
+                  {t.label}
+                  {t.id === 'reservations' && counts.pending > 0 && (
+                    <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-400">
+                      {counts.pending}
+                    </span>
+                  )}
                 </button>
               ))}
             </div>
+          </div>
+        </div>
+      </header>
 
-            {error && (
-              <div className="bg-red-950/50 border border-red-800/50 rounded-xl p-4 mb-6 text-red-400 text-sm">
-                Error loading reservations: {error}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        {/* ── Reservations Tab ───────────────────────────── */}
+        {tab === 'reservations' && (
+          <>
+            {/* Date nav */}
+            <div className="flex items-center gap-3 mb-6">
+              <button
+                onClick={() => goDate(-1)}
+                className="px-3 py-2 rounded-lg border border-zinc-800 bg-zinc-900 hover:bg-zinc-800 transition text-zinc-300 text-sm"
+              >
+                ◀
+              </button>
+              <div className="flex-1 text-center">
+                <div className="text-white font-semibold">{formatDateCR(currentDate)}</div>
+                <div className="text-zinc-500 text-xs">{currentDate === todayCR() ? 'Hoy' : ''}</div>
               </div>
-            )}
+              <button
+                onClick={() => setCurrentDate(todayCR())}
+                className="px-3 py-1.5 rounded-lg border border-zinc-800 bg-zinc-900 hover:bg-zinc-800 transition text-zinc-400 text-xs"
+              >
+                Hoy
+              </button>
+              <button
+                onClick={() => goDate(1)}
+                className="px-3 py-2 rounded-lg border border-zinc-800 bg-zinc-900 hover:bg-zinc-800 transition text-zinc-300 text-sm"
+              >
+                ▶
+              </button>
+              <Link
+                href="/admin/new-reservation"
+                className="ml-2 px-4 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium transition"
+              >
+                + Nueva Reserva
+              </Link>
+            </div>
 
-            {/* Filter tabs */}
-            <div className="flex items-center gap-1 mb-4 bg-zinc-900 border border-zinc-800 rounded-lg p-1 w-fit">
-              {(['all', 'pending', 'confirmed', 'cancelled'] as Filter[]).map(f => (
+            {/* Stats */}
+            <div className="grid grid-cols-3 sm:grid-cols-6 gap-3 mb-6">
+              {[
+                { label: 'Total',         value: counts.total,     color: 'text-white' },
+                { label: 'Pendientes',    value: counts.pending,   color: 'text-amber-400' },
+                { label: 'Confirmadas',   value: counts.confirmed, color: 'text-emerald-400' },
+                { label: 'Canceladas',    value: counts.cancelled, color: 'text-red-400' },
+                { label: 'No llegaron',   value: counts.no_show,   color: 'text-zinc-400' },
+                { label: 'Pax del día',   value: counts.pax,       color: 'text-orange-400' },
+              ].map(s => (
+                <div key={s.label} className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-3 text-center">
+                  <div className={`text-2xl font-bold ${s.color}`}>{s.value}</div>
+                  <div className="text-zinc-500 text-xs mt-0.5">{s.label}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Zone filter */}
+            <div className="flex items-center gap-2 mb-4">
+              {([
+                { val: '' as const,        label: 'Todas las zonas' },
+                { val: 'salon' as const,   label: 'Salón' },
+                { val: 'terraza' as const, label: 'Terraza' },
+              ]).map(z => (
                 <button
-                  key={f}
-                  onClick={() => setFilter(f)}
-                  className={`px-3 py-1.5 rounded-md text-sm font-medium transition capitalize ${
-                    filter === f ? 'bg-zinc-800 text-white' : 'text-zinc-400 hover:text-zinc-200'
+                  key={z.val}
+                  onClick={() => setZoneFilter(z.val)}
+                  className={`px-3 py-1.5 rounded-lg border text-sm transition ${
+                    zoneFilter === z.val
+                      ? 'border-orange-500/40 bg-orange-500/10 text-orange-400'
+                      : 'border-zinc-800 bg-zinc-900/50 text-zinc-400 hover:text-zinc-200'
                   }`}
                 >
-                  {f === 'all' ? 'All' : f}
+                  {z.label}
                 </button>
               ))}
             </div>
 
             {/* Table */}
-            {filtered.length === 0 ? (
-              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-12 text-center">
-                <div className="text-zinc-600 text-sm">No reservations found</div>
+            {loadingDay ? (
+              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-12 text-center text-zinc-500 text-sm">
+                Cargando…
+              </div>
+            ) : filteredRows.length === 0 ? (
+              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-12 text-center text-zinc-600 text-sm">
+                No hay reservas para este día{zoneFilter ? ` en ${zoneFilter}` : ''}.
               </div>
             ) : (
               <div className="rounded-xl border border-zinc-800 overflow-hidden">
@@ -193,54 +263,71 @@ export default function AdminDashboard({
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-zinc-800 bg-zinc-900/80">
-                        <th className="text-left px-4 py-3 text-zinc-400 font-medium">Guest</th>
-                        <th className="text-left px-4 py-3 text-zinc-400 font-medium">Contact</th>
-                        <th className="text-left px-4 py-3 text-zinc-400 font-medium">Date &amp; Time</th>
-                        <th className="text-left px-4 py-3 text-zinc-400 font-medium">Party</th>
-                        <th className="text-left px-4 py-3 text-zinc-400 font-medium">Status</th>
-                        <th className="text-left px-4 py-3 text-zinc-400 font-medium">Submitted</th>
-                        <th className="text-right px-4 py-3 text-zinc-400 font-medium">Actions</th>
+                        <th className="text-left px-4 py-3 text-zinc-400 font-medium">Hora</th>
+                        <th className="text-left px-4 py-3 text-zinc-400 font-medium">Nombre</th>
+                        <th className="text-left px-4 py-3 text-zinc-400 font-medium">Teléfono</th>
+                        <th className="text-left px-4 py-3 text-zinc-400 font-medium">Pax</th>
+                        <th className="text-left px-4 py-3 text-zinc-400 font-medium">Zona</th>
+                        <th className="text-left px-4 py-3 text-zinc-400 font-medium">Mesa(s)</th>
+                        <th className="text-left px-4 py-3 text-zinc-400 font-medium">Estado</th>
+                        <th className="text-right px-4 py-3 text-zinc-400 font-medium">Acciones</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-zinc-800/50">
-                      {filtered.map(r => (
+                      {filteredRows.map(r => (
                         <tr key={r.id} className="bg-zinc-900/30 hover:bg-zinc-900/60 transition">
+                          <td className="px-4 py-3 font-mono text-zinc-300 text-xs">{formatTimeCR(r.time)}</td>
                           <td className="px-4 py-3 text-white font-medium">{r.name}</td>
+                          <td className="px-4 py-3 text-zinc-400 text-xs font-mono">{r.phone || '—'}</td>
+                          <td className="px-4 py-3 text-zinc-300 text-center">{r.party_size}</td>
                           <td className="px-4 py-3">
-                            <div className="text-zinc-300">{r.email}</div>
-                            <div className="text-zinc-500 text-xs">{r.phone}</div>
+                            {r.zone ? (
+                              <span className="text-xs text-zinc-400 capitalize">{r.zone}</span>
+                            ) : <span className="text-zinc-600">—</span>}
+                          </td>
+                          <td className="px-4 py-3 font-mono text-xs text-zinc-400">
+                            {(r.table_ids ?? []).join(', ') || '—'}
                           </td>
                           <td className="px-4 py-3">
-                            <div className="text-zinc-300">{formatDate(r.date)}</div>
-                            <div className="text-zinc-500 text-xs">{r.time}</div>
-                          </td>
-                          <td className="px-4 py-3 text-zinc-300">{r.party_size}</td>
-                          <td className="px-4 py-3">
-                            <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium border capitalize ${statusStyles[r.status]}`}>
-                              {r.status}
+                            <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium border ${STATUS_STYLES[r.status]}`}>
+                              {STATUS_LABELS[r.status]}
                             </span>
                           </td>
-                          <td className="px-4 py-3 text-zinc-500 text-xs">{formatCreatedAt(r.created_at)}</td>
                           <td className="px-4 py-3">
-                            <div className="flex items-center justify-end gap-2">
-                              {r.status !== 'confirmed' && (
+                            <div className="flex items-center justify-end gap-1.5 flex-wrap">
+                              {r.status === 'pending' && (
                                 <button
-                                  onClick={() => updateStatus(r.id, 'confirmed')}
-                                  disabled={actionLoading === r.id + 'confirmed' || isPending}
-                                  className="text-xs px-2.5 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                                  onClick={() => changeStatus(r.id, 'confirmed')}
+                                  disabled={!!actionLoading || isPending}
+                                  className="text-xs px-2 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 disabled:opacity-50 transition"
                                 >
-                                  {actionLoading === r.id + 'confirmed' ? '…' : 'Confirm'}
+                                  {actionLoading === r.id + 'confirmed' ? '…' : '✔ Confirmar'}
                                 </button>
                               )}
-                              {r.status !== 'cancelled' && (
+                              {(r.status === 'pending' || r.status === 'confirmed') && (
                                 <button
-                                  onClick={() => updateStatus(r.id, 'cancelled')}
-                                  disabled={actionLoading === r.id + 'cancelled' || isPending}
-                                  className="text-xs px-2.5 py-1 rounded-md bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                                  onClick={() => changeStatus(r.id, 'cancelled')}
+                                  disabled={!!actionLoading || isPending}
+                                  className="text-xs px-2 py-1 rounded-md bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 disabled:opacity-50 transition"
                                 >
-                                  {actionLoading === r.id + 'cancelled' ? '…' : 'Cancel'}
+                                  {actionLoading === r.id + 'cancelled' ? '…' : '✕ Cancelar'}
                                 </button>
                               )}
+                              {r.status === 'confirmed' && (
+                                <button
+                                  onClick={() => changeStatus(r.id, 'no_show')}
+                                  disabled={!!actionLoading || isPending}
+                                  className="text-xs px-2 py-1 rounded-md bg-zinc-500/10 border border-zinc-500/20 text-zinc-400 hover:bg-zinc-500/20 disabled:opacity-50 transition"
+                                >
+                                  {actionLoading === r.id + 'no_show' ? '…' : 'No llegó'}
+                                </button>
+                              )}
+                              <Link
+                                href={`/admin/new-reservation?id=${r.id}`}
+                                className="text-xs px-2 py-1 rounded-md border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition"
+                              >
+                                ✏ Editar
+                              </Link>
                             </div>
                           </td>
                         </tr>
@@ -251,53 +338,55 @@ export default function AdminDashboard({
 
                 {/* Mobile */}
                 <div className="lg:hidden divide-y divide-zinc-800/50">
-                  {filtered.map(r => (
+                  {filteredRows.map(r => (
                     <div key={r.id} className="p-4 bg-zinc-900/30">
                       <div className="flex items-start justify-between mb-2">
                         <div>
                           <div className="text-white font-medium">{r.name}</div>
-                          <div className="text-zinc-400 text-sm">{r.email}</div>
+                          <div className="text-zinc-500 text-xs font-mono">{r.phone}</div>
                         </div>
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium border capitalize ${statusStyles[r.status]}`}>
-                          {r.status}
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium border ${STATUS_STYLES[r.status]}`}>
+                          {STATUS_LABELS[r.status]}
                         </span>
                       </div>
-                      <div className="grid grid-cols-2 gap-2 text-sm text-zinc-400 mb-3">
-                        <span>{formatDate(r.date)} · {r.time}</span>
-                        <span>Party: {r.party_size}</span>
-                        <span>{r.phone}</span>
-                        <span className="text-zinc-600 text-xs">{formatCreatedAt(r.created_at)}</span>
+                      <div className="text-sm text-zinc-400 mb-3 grid grid-cols-2 gap-1">
+                        <span>{formatTimeCR(r.time)} · {r.party_size} pax</span>
+                        <span>{r.zone ?? '—'} · {(r.table_ids ?? []).join(', ') || '—'}</span>
                       </div>
-                      <div className="flex gap-2">
-                        {r.status !== 'confirmed' && (
-                          <button
-                            onClick={() => updateStatus(r.id, 'confirmed')}
-                            disabled={actionLoading === r.id + 'confirmed' || isPending}
-                            className="flex-1 text-xs py-1.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 disabled:opacity-50 transition"
-                          >
-                            Confirm
+                      <div className="flex gap-2 flex-wrap">
+                        {r.status === 'pending' && (
+                          <button onClick={() => changeStatus(r.id, 'confirmed')} disabled={!!actionLoading}
+                            className="flex-1 text-xs py-1.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 disabled:opacity-50 transition">
+                            ✔ Confirmar
                           </button>
                         )}
-                        {r.status !== 'cancelled' && (
-                          <button
-                            onClick={() => updateStatus(r.id, 'cancelled')}
-                            disabled={actionLoading === r.id + 'cancelled' || isPending}
-                            className="flex-1 text-xs py-1.5 rounded-md bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 disabled:opacity-50 transition"
-                          >
-                            Cancel
+                        {(r.status === 'pending' || r.status === 'confirmed') && (
+                          <button onClick={() => changeStatus(r.id, 'cancelled')} disabled={!!actionLoading}
+                            className="flex-1 text-xs py-1.5 rounded-md bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 disabled:opacity-50 transition">
+                            Cancelar
                           </button>
                         )}
+                        {r.status === 'confirmed' && (
+                          <button onClick={() => changeStatus(r.id, 'no_show')} disabled={!!actionLoading}
+                            className="flex-1 text-xs py-1.5 rounded-md bg-zinc-500/10 border border-zinc-700 text-zinc-400 disabled:opacity-50 transition">
+                            No llegó
+                          </button>
+                        )}
+                        <Link href={`/admin/new-reservation?id=${r.id}`}
+                          className="text-xs px-3 py-1.5 rounded-md border border-zinc-700 text-zinc-400 hover:text-white transition">
+                          ✏ Editar
+                        </Link>
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
             )}
-            <p className="text-zinc-600 text-xs mt-4 text-right">{filtered.length} of {reservations.length} reservations</p>
+            <p className="text-zinc-600 text-xs mt-3 text-right">{filteredRows.length} reservas</p>
           </>
         )}
 
-        {/* ── Live Music Tab ── */}
+        {/* ── Live Music Tab ──────────────────────────────── */}
         {tab === 'live-music' && (
           <LiveMusicManager initialSchedule={schedule} initialEvents={events} />
         )}
