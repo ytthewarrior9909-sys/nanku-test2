@@ -1000,11 +1000,10 @@ ul { list-style: none; }
   inset: 0;
   background: rgba(0,0,0,0.95);
   z-index: 1000;
-  display: none;
+  display: flex;
   align-items: center;
   justify-content: center;
 }
-.lightbox-overlay.open { display: flex; }
 .lightbox-close {
   position: absolute;
   top: 1.25rem; right: 1.25rem;
@@ -3536,6 +3535,146 @@ ul { list-style: none; }
   transition: width 0.5s;
 }
 .artist-card:hover .artist-line { width: 3.5rem; }
+
+/* --- Artist Popup --- */
+.am-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0,0,0,0.88);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem;
+  animation: nm-fade-in 0.18s ease;
+}
+.am-modal {
+  position: relative;
+  background: #1e1e1e;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  overflow: hidden;
+  width: 95vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  animation: nm-slide-up 0.22s ease;
+}
+@media (min-width: 600px) {
+  .am-modal {
+    width: 80vw;
+    height: 80vh;
+    max-height: 80vh;
+  }
+}
+.am-close {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  z-index: 10;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.6);
+  border: none;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.am-close:hover { background: #E8751A; }
+.am-columns {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+@media (min-width: 600px) {
+  .am-columns {
+    flex-direction: row;
+    height: 100%;
+  }
+}
+.am-photo {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4/5;
+  flex-shrink: 0;
+}
+@media (min-width: 600px) {
+  .am-photo {
+    width: 45%;
+    height: 100%;
+    aspect-ratio: unset;
+  }
+}
+.am-info {
+  flex: 1;
+  padding: 2rem 1.75rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  overflow-y: auto;
+  min-height: 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.12) transparent;
+}
+.am-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #E8751A;
+  margin: 0;
+}
+.am-name {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+  padding-right: 2.5rem;
+}
+.am-divider {
+  width: 2.5rem;
+  height: 2px;
+  background: #E8751A;
+  border-radius: 2px;
+}
+.am-bio {
+  font-family: 'Lato', sans-serif;
+  font-size: 0.95rem;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.75;
+}
+.am-reserve {
+  margin-top: auto;
+  padding-top: 1.25rem;
+}
+.am-reserve-btn {
+  display: block;
+  width: 100%;
+  background: #E8751A;
+  color: #fff;
+  text-align: center;
+  padding: 0.85rem 1.5rem;
+  border-radius: 8px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+}
+.am-reserve-btn:hover {
+  background: #cf641a;
+  transform: translateY(-1px);
+}
 
 .lm-experience {
   position: relative;

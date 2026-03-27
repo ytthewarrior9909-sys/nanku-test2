@@ -5,6 +5,7 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import WhatsAppButton from '@/components/WhatsAppButton'
 import { createClient } from '@supabase/supabase-js'
+import ArtistsGrid from '@/components/ArtistsGrid'
 
 export const dynamic = 'force-dynamic'
 
@@ -229,29 +230,7 @@ export default async function LiveMusicPage() {
             <div className="divider-line" style={{ margin: '0 auto 1.25rem' }}></div>
             <p className="lm-artists-sub">Local and international talent on our stage</p>
           </div>
-          <div className="lm-artists-grid fade-up">
-            {ARTISTS.map(artist => (
-              <div key={artist.name} className="artist-card">
-                <Image
-                  src={artist.photo}
-                  alt={artist.name}
-                  loading="lazy"
-                  width={600}
-                  height={750}
-                  className="artist-img"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center' }}
-                />
-                <div className="artist-overlay"></div>
-                <div className="artist-hover-overlay"></div>
-                <div className="artist-info">
-                  <h3 className="artist-name">{artist.name}</h3>
-                  <p style={{ color: '#E8751A', fontSize: '0.75rem', fontFamily: 'Montserrat, sans-serif', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', margin: '0.25rem 0 0.5rem' }}>{artist.label}</p>
-                  <div className="artist-line"></div>
-                  <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.8rem', fontFamily: 'Lato, sans-serif', lineHeight: 1.5, marginTop: '0.5rem', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{artist.bio}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+          <ArtistsGrid artists={ARTISTS} lang="en" />
         </div>
       </section>
 
