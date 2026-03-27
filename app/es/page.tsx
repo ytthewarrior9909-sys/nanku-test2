@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import WhatsAppButton from '@/components/WhatsAppButton'
@@ -91,7 +92,7 @@ export default function HomePageES() {
                 <div className="exp-img-side">
                   <div className="exp-img-frame"></div>
                   <div className="exp-img-wrap">
-                    <img src="https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c5e230e24981c10d2161c9.jpeg" alt="Música en Vivo" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center' }} />
+                    <img src="https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c611db69544cbe5cda9286.jpg" alt="Música en Vivo" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }} />
                     <div className="exp-img-gradient" style={{ background: 'linear-gradient(to right,rgba(17,17,17,0.7) 0%,transparent 50%),linear-gradient(to top,rgba(17,17,17,0.5) 0%,transparent 40%)' }}></div>
                     <div className="exp-img-number" style={{ WebkitTextStroke: '1px rgba(232,117,26,0.25)' }}>01</div>
                   </div>
@@ -106,10 +107,10 @@ export default function HomePageES() {
                   <h3 className="exp-title">Música en Vivo</h3>
                   <div className="exp-bar" style={{ background: 'linear-gradient(to right,#E8751A,transparent)' }}></div>
                   <p className="exp-desc">Cada lunes y sábado, la selva cobra vida con artistas locales interpretando ritmos tropicales y latinos bajo las estrellas.</p>
-                  <div className="exp-cta">
+                  <Link href="/es/live-music" className="exp-cta">
                     <span style={{ color: '#E8751A' }}>Descubrí más</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="#E8751A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
-                  </div>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -135,10 +136,10 @@ export default function HomePageES() {
                   <h3 className="exp-title">Cócteles de la Casa</h3>
                   <div className="exp-bar" style={{ background: 'linear-gradient(to right,#F5A623,transparent)' }}></div>
                   <p className="exp-desc">Cócteles tropicales artesanales que mezclan destilados locales con frutas exóticas frescas, hierbas aromáticas y un toque de magia costarricense.</p>
-                  <div className="exp-cta">
+                  <Link href="/es/menu" className="exp-cta">
                     <span style={{ color: '#F5A623' }}>Descubrí más</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="#F5A623" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
-                  </div>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -164,10 +165,10 @@ export default function HomePageES() {
                   <h3 className="exp-title">Cortes Premium</h3>
                   <div className="exp-bar" style={{ background: 'linear-gradient(to right,#E8751A,transparent)' }}></div>
                   <p className="exp-desc">Cortes selectos cocinados a la perfección sobre llama viva, de las mejores fincas locales y sazonados con nuestras mezclas exclusivas.</p>
-                  <div className="exp-cta">
+                  <Link href="/es/menu" className="exp-cta">
                     <span style={{ color: '#E8751A' }}>Descubrí más</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="#E8751A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
-                  </div>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -178,7 +179,7 @@ export default function HomePageES() {
                 <div className="exp-img-side">
                   <div className="exp-img-frame"></div>
                   <div className="exp-img-wrap">
-                    <img src="https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69b91750c625853190e4be4b.jpg" alt="Ambiente Tropical" loading="lazy" />
+                    <img src="https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c611dbc1840fb68ef4cad7.jpg" alt="Ambiente Tropical" loading="lazy" />
                     <div className="exp-img-gradient" style={{ background: 'linear-gradient(to left,rgba(17,17,17,0.7) 0%,transparent 50%),linear-gradient(to top,rgba(17,17,17,0.5) 0%,transparent 40%)' }}></div>
                     <div className="exp-img-number" style={{ WebkitTextStroke: '1px rgba(45,90,39,0.4)', left: '1.5rem', right: 'auto' }}>04</div>
                   </div>
@@ -193,10 +194,10 @@ export default function HomePageES() {
                   <h3 className="exp-title">Ambiente Tropical</h3>
                   <div className="exp-bar" style={{ background: 'linear-gradient(to right,#2D5A27,transparent)' }}></div>
                   <p className="exp-desc">Sumergite en la exuberante flora de la selva, cielos abiertos y la calidez del territorio volcánico — a minutos del Arenal.</p>
-                  <div className="exp-cta">
+                  <Link href="/es/about" className="exp-cta">
                     <span style={{ color: '#2D5A27' }}>Descubrí más</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="#2D5A27" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
-                  </div>
+                  </Link>
                 </div>
               </div>
             </div>

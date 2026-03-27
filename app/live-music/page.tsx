@@ -37,7 +37,7 @@ const ARTISTS = [
   {
     name: 'Esteban Calero',
     label: 'Latin Loop Show',
-    photo: 'https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c5e230e24981c10d2161c9.jpeg',
+    photo: 'https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c611db69544cbe5cda9286.jpg',
     bio: 'Versatile musician known for his Latin sound and live loop pedal performances. Delivers full live arrangements in real time, adapting seamlessly to every atmosphere.',
   },
   {
@@ -87,7 +87,7 @@ export default async function LiveMusicPage() {
       <section className="lm-hero">
         <div
           className="lm-hero-bg"
-          style={{ backgroundImage: "url('https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c5e230e24981c10d2161c9.jpeg')" }}
+          style={{ backgroundImage: "url('https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c611db69544cbe5cda9286.jpg')" }}
         ></div>
         <div className="lm-hero-overlay"></div>
         <div className="lm-hero-glow"></div>
@@ -276,7 +276,7 @@ export default async function LiveMusicPage() {
             <div className="lm-experience-photos">
               <Image src="https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c5e484e24981fcd12193a5.jpg" alt="Cocktails" loading="lazy" width={600} height={400} className="lm-exp-photo" style={{ width: '100%', objectFit: 'cover' }} />
               <Image src="https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c5edb5146bc5f778eaab9e.jpg" alt="Steaks" loading="lazy" width={600} height={400} className="lm-exp-photo" style={{ width: '100%', objectFit: 'cover' }} />
-              <Image src="https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c5e230e24981c10d2161c9.jpeg" alt="Live Music" loading="lazy" width={600} height={400} className="lm-exp-photo full" style={{ width: '100%', objectFit: 'cover', objectPosition: 'top center' }} />
+              <Image src="https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c611db69544cbe5cda9286.jpg" alt="Live Music" loading="lazy" width={600} height={400} className="lm-exp-photo full" style={{ width: '100%', objectFit: 'cover', objectPosition: 'top center' }} />
             </div>
           </div>
           <div className="lm-feature-cards fade-up">

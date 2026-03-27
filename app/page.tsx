@@ -87,7 +87,7 @@ export default function HomePage() {
                 <div className="exp-img-side">
                   <div className="exp-img-frame"></div>
                   <div className="exp-img-wrap">
-                    <Image src="https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c5e230e24981c10d2161c9.jpeg" alt="Live Music" width={800} height={600} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center' }} />
+                    <Image src="https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c611db69544cbe5cda9286.jpg" alt="Live Music" width={800} height={600} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }} />
                     <div className="exp-img-gradient" style={{ background: 'linear-gradient(to right,rgba(17,17,17,0.7) 0%,transparent 50%),linear-gradient(to top,rgba(17,17,17,0.5) 0%,transparent 40%)' }}></div>
                     <div className="exp-img-number" style={{ WebkitTextStroke: '1px rgba(232,117,26,0.25)' }}>01</div>
                   </div>
@@ -102,10 +102,10 @@ export default function HomePage() {
                   <h3 className="exp-title">Live Music</h3>
                   <div className="exp-bar" style={{ background: 'linear-gradient(to right,#E8751A,transparent)' }}></div>
                   <p className="exp-desc">Every Monday &amp; Saturday, the jungle comes alive with talented local artists performing tropical and Latin beats under the stars.</p>
-                  <div className="exp-cta">
+                  <Link href="/live-music" className="exp-cta">
                     <span style={{ color: '#E8751A' }}>Discover more</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="#E8751A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
-                  </div>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -131,10 +131,10 @@ export default function HomePage() {
                   <h3 className="exp-title">Signature Cocktails</h3>
                   <div className="exp-bar" style={{ background: 'linear-gradient(to right,#F5A623,transparent)' }}></div>
                   <p className="exp-desc">Handcrafted tropical cocktails blending local spirits with fresh exotic fruits, aromatic herbs, and a touch of Costa Rican magic.</p>
-                  <div className="exp-cta">
+                  <Link href="/menu" className="exp-cta">
                     <span style={{ color: '#F5A623' }}>Discover more</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="#F5A623" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
-                  </div>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -160,10 +160,10 @@ export default function HomePage() {
                   <h3 className="exp-title">Premium Steaks</h3>
                   <div className="exp-bar" style={{ background: 'linear-gradient(to right,#E8751A,transparent)' }}></div>
                   <p className="exp-desc">Choice cuts cooked to perfection over open flame, sourced from the finest local farms and seasoned with our signature blends.</p>
-                  <div className="exp-cta">
+                  <Link href="/menu" className="exp-cta">
                     <span style={{ color: '#E8751A' }}>Discover more</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="#E8751A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
-                  </div>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -174,7 +174,7 @@ export default function HomePage() {
                 <div className="exp-img-side">
                   <div className="exp-img-frame"></div>
                   <div className="exp-img-wrap">
-                    <Image src="https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69b91750c625853190e4be4b.jpg" alt="Tropical Atmosphere" width={800} height={600} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <Image src="https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c611dbc1840fb68ef4cad7.jpg" alt="Tropical Atmosphere" width={800} height={600} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     <div className="exp-img-gradient" style={{ background: 'linear-gradient(to left,rgba(17,17,17,0.7) 0%,transparent 50%),linear-gradient(to top,rgba(17,17,17,0.5) 0%,transparent 40%)' }}></div>
                     <div className="exp-img-number" style={{ WebkitTextStroke: '1px rgba(45,90,39,0.4)', left: '1.5rem', right: 'auto' }}>04</div>
                   </div>
@@ -189,10 +189,10 @@ export default function HomePage() {
                   <h3 className="exp-title">Tropical Atmosphere</h3>
                   <div className="exp-bar" style={{ background: 'linear-gradient(to right,#2D5A27,transparent)' }}></div>
                   <p className="exp-desc">Immerse yourself in lush jungle flora, open skies, and the gentle warmth of volcano country — just minutes from Arenal.</p>
-                  <div className="exp-cta">
+                  <Link href="/about" className="exp-cta">
                     <span style={{ color: '#2D5A27' }}>Discover more</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="#2D5A27" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
-                  </div>
+                  </Link>
                 </div>
               </div>
             </div>

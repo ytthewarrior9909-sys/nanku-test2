@@ -20,7 +20,7 @@ export default function AboutPageES() {
       <section className="about-hero">
         <div
           className="about-hero-bg"
-          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1920&q=85')" }}
+          style={{ backgroundImage: "url('https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c611dbc1840fb68ef4cad7.jpg')" }}
         ></div>
         <div className="about-hero-overlay"></div>
         <div className="about-hero-glow"></div>
@@ -54,7 +54,7 @@ export default function AboutPageES() {
             </div>
             <div className="about-story-photos fade-up">
               <Image
-                src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80"
+                src="https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69c611dbc1840fb68ef4cad7.jpg"
                 alt="Interior del restaurante"
                 loading="lazy"
                 width={600}
