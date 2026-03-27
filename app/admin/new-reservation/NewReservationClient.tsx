@@ -163,41 +163,41 @@ export default function NewReservationClient({
   const tables = getSelectableTables(zone || null)
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100">
+    <div className="min-h-screen bg-gray-50 text-gray-900">
       {/* Header */}
-      <header className="border-b border-zinc-800 bg-zinc-900/50 backdrop-blur-sm sticky top-0 z-10">
+      <header className="border-b border-gray-200 bg-white/95 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
               <span className="text-orange-400 font-bold text-sm">N</span>
             </div>
-            <span className="text-white font-semibold text-sm">Nanku Admin</span>
+            <span className="text-gray-900 font-semibold text-sm">Nanku Admin</span>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-zinc-500 text-sm hidden md:block">{userEmail}</span>
-            <button onClick={handleSignOut} className="text-zinc-400 hover:text-white text-sm transition px-3 py-1.5 rounded-lg hover:bg-zinc-800">Sign out</button>
+            <span className="text-gray-400 text-sm hidden md:block">{userEmail}</span>
+            <button onClick={handleSignOut} className="text-gray-500 hover:text-gray-900 text-sm transition px-3 py-1.5 rounded-lg hover:bg-gray-100">Sign out</button>
           </div>
         </div>
-        <div className="border-t border-zinc-800/50 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="border-t border-gray-200 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AdminNav />
         </div>
       </header>
 
       <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-white">{isEdit ? 'Editar Reserva' : 'Nueva Reserva'}</h1>
-          <Link href="/admin" className="text-zinc-400 hover:text-white text-sm transition">← Volver</Link>
+          <h1 className="text-2xl font-bold text-gray-900">{isEdit ? 'Editar Reserva' : 'Nueva Reserva'}</h1>
+          <Link href="/admin" className="text-gray-500 hover:text-gray-900 text-sm transition">← Volver</Link>
         </div>
 
         {errors.form && (
-          <div className="bg-red-950/50 border border-red-800/50 rounded-xl p-3 mb-4 text-red-400 text-sm">{errors.form}</div>
+          <div className="bg-red-50 border border-red-200 rounded-xl p-3 mb-4 text-red-600 text-sm">{errors.form}</div>
         )}
 
         <form onSubmit={handleSubmit} noValidate className="space-y-5">
 
           {/* Customer */}
-          <section className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-5">
-            <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-wide mb-4">Datos del Cliente</h2>
+          <section className="rounded-xl border border-gray-200 bg-white p-5">
+            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">Datos del Cliente</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Field label="Nombre *" error={errors.name}>
                 <input type="text" value={name} onChange={e => setName(e.target.value)} required placeholder="Nombre completo" className={inputCls(!!errors.name)} />
@@ -217,8 +217,8 @@ export default function NewReservationClient({
           </section>
 
           {/* Reservation details */}
-          <section className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-5">
-            <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-wide mb-4">Detalles de la Reserva</h2>
+          <section className="rounded-xl border border-gray-200 bg-white p-5">
+            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">Detalles de la Reserva</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Field label="Fecha *" error={errors.date}>
                 <input type="date" value={date} min={isEdit ? undefined : todayCR()}
@@ -258,9 +258,9 @@ export default function NewReservationClient({
           </section>
 
           {/* Table selector */}
-          <section className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-5">
-            <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-wide mb-1">Mesa(s)</h2>
-            <p className="text-zinc-600 text-xs mb-3">Selecciona fecha + hora para ver disponibilidad.</p>
+          <section className="rounded-xl border border-gray-200 bg-white p-5">
+            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-1">Mesa(s)</h2>
+            <p className="text-gray-400 text-xs mb-3">Selecciona fecha + hora para ver disponibilidad.</p>
 
             {suggestion && (
               <div className="mb-3 px-3 py-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs">{suggestion}</div>
@@ -269,12 +269,12 @@ export default function NewReservationClient({
             {errors.tables && <p className="text-red-400 text-xs mb-2">{errors.tables}</p>}
 
             {(!date || !time) ? (
-              <p className="text-zinc-600 text-sm">Elige fecha y turno primero.</p>
+              <p className="text-gray-400 text-sm">Elige fecha y turno primero.</p>
             ) : loadingTables ? (
-              <p className="text-zinc-500 text-sm">Verificando disponibilidad…</p>
+              <p className="text-gray-400 text-sm">Verificando disponibilidad…</p>
             ) : (
               <>
-                <div className="text-xs text-zinc-600 mb-2">
+                <div className="text-xs text-gray-400 mb-2">
                   <span className="text-emerald-500">● Disponible</span>
                   {' · '}
                   <span className="text-red-500">● Ocupada</span>
@@ -306,8 +306,8 @@ export default function NewReservationClient({
                   })}
                 </div>
                 {selectedTables.length > 0 && (
-                  <p className="mt-2 text-xs text-zinc-500">
-                    Seleccionadas: <span className="text-zinc-300 font-mono">{selectedTables.join(', ')}</span>
+                  <p className="mt-2 text-xs text-gray-400">
+                    Seleccionadas: <span className="text-gray-600 font-mono">{selectedTables.join(', ')}</span>
                   </p>
                 )}
               </>
@@ -315,8 +315,8 @@ export default function NewReservationClient({
           </section>
 
           {/* Notes */}
-          <section className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-5">
-            <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-wide mb-3">Notas Internas</h2>
+          <section className="rounded-xl border border-gray-200 bg-white p-5">
+            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Notas Internas</h2>
             <textarea
               value={notes}
               onChange={e => setNotes(e.target.value)}
@@ -332,7 +332,7 @@ export default function NewReservationClient({
               className="px-5 py-2.5 rounded-lg bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white text-sm font-medium transition">
               {saving ? 'Guardando…' : isEdit ? '💾 Actualizar Reserva' : '💾 Crear Reserva'}
             </button>
-            <Link href="/admin" className="px-5 py-2.5 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white text-sm transition">
+            <Link href="/admin" className="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-500 hover:text-gray-900 text-sm transition">
               Cancelar
             </Link>
             {isEdit && (
@@ -351,7 +351,7 @@ export default function NewReservationClient({
 function Field({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-zinc-500 text-xs uppercase tracking-wide font-medium">{label}</label>
+      <label className="text-gray-400 text-xs uppercase tracking-wide font-medium">{label}</label>
       {children}
       {error && <span className="text-red-400 text-xs">{error}</span>}
     </div>
@@ -359,5 +359,5 @@ function Field({ label, error, children }: { label: string; error?: string; chil
 }
 
 function inputCls(hasError: boolean) {
-  return `w-full bg-zinc-800 border ${hasError ? 'border-red-700' : 'border-zinc-700'} rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-orange-500 placeholder-zinc-600`
+  return `w-full bg-gray-100 border ${hasError ? 'border-red-700' : 'border-gray-300'} rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:border-orange-500 placeholder-gray-400`
 }

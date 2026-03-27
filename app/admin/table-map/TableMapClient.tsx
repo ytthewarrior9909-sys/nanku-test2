@@ -23,18 +23,15 @@ import {
 } from '@/lib/tables'
 
 // ─── Constants ────────────────────────────────────────────────────────────────
-const ARRIVAL_WINDOW_MS = 20 * 60 * 1000   // 20 minutes
+const ARRIVAL_WINDOW_MS = 20 * 60 * 1000
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
-
-/** Costa Rica date+time → epoch ms  (CR = UTC-6) */
 function crToMs(dateStr: string, timeStr: string): number {
   const [y, mo, d] = dateStr.split('-').map(Number)
   const [h, mi]    = timeStr.split(':').map(Number)
   return Date.UTC(y, mo - 1, d, h + 6, mi)
 }
 
-/** Format a milliseconds duration into a human-readable countdown */
 function fmtCountdown(ms: number): string {
   const t = Math.max(0, Math.floor(ms / 1000))
   const h = Math.floor(t / 3600)
@@ -45,18 +42,15 @@ function fmtCountdown(ms: number): string {
   return `${s}s`
 }
 
-/** Pick the most relevant slot for right now (only meaningful for today) */
 function pickSlot(dateStr: string, nowMs: number): string {
   const all   = [...LUNCH_SLOTS, ...DINNER_SLOTS]
   const today = todayCR()
   if (dateStr !== today) return all[0]
-  // Prefer an active slot (started, within 2-hour service window)
   const active = all.find(s => {
     const ms = crToMs(dateStr, s)
     return nowMs >= ms && nowMs < ms + 2 * 3600 * 1000
   })
   if (active) return active
-  // Otherwise: next upcoming slot
   const next = all.find(s => crToMs(dateStr, s) > nowMs)
   return next ?? all[all.length - 1]
 }
@@ -65,11 +59,11 @@ function pickSlot(dateStr: string, nowMs: number): string {
 type TableStatus = 'free' | 'pending' | 'upcoming' | 'arriving' | 'overdue'
 
 const TABLE_STYLES: Record<TableStatus, string> = {
-  free:     'border-emerald-800/40 bg-emerald-950/10 text-emerald-500',
-  pending:  'border-amber-500/40   bg-amber-950/20   text-amber-400',
-  upcoming: 'border-sky-500/40     bg-sky-950/20     text-sky-400',
-  arriving: 'border-orange-500     bg-orange-950/30  text-orange-400',
-  overdue:  'border-red-500/60     bg-red-950/30     text-red-400',
+  free:     'border-emerald-400/60 bg-emerald-50   text-emerald-700',
+  pending:  'border-amber-400/60   bg-amber-50     text-amber-700',
+  upcoming: 'border-sky-400/60     bg-sky-50       text-sky-700',
+  arriving: 'border-orange-500     bg-orange-50    text-orange-600',
+  overdue:  'border-red-400/70     bg-red-50       text-red-600',
 }
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
@@ -87,8 +81,8 @@ function SlotButton({
       onClick={onClick}
       className={`relative px-3 py-1.5 rounded-lg text-sm font-mono transition ${
         selected
-          ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/20'
-          : 'bg-zinc-800/60 border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500'
+          ? 'bg-orange-500 text-white shadow-md shadow-orange-500/20'
+          : 'bg-white border border-gray-300 text-gray-600 hover:text-gray-900 hover:border-gray-400'
       }`}
     >
       {slot}
@@ -125,28 +119,26 @@ function TableCell({
   return (
     <button
       onClick={onClick}
-      className={`relative flex flex-col items-center justify-center rounded-xl border-2 p-2 transition hover:scale-105 cursor-pointer ${
+      className={`relative flex flex-col items-center justify-center rounded-xl border-2 p-2 transition hover:scale-105 cursor-pointer shadow-sm ${
         wide ? 'col-span-2' : ''
       } ${TABLE_STYLES[status]}`}
       style={{ minHeight: 76 }}
     >
-      {/* Pulsing indicator for arrival window */}
       {status === 'arriving' && (
         <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75" />
           <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-orange-500" />
         </span>
       )}
-
       <span className="text-xs font-mono font-bold leading-tight">{t.label || t.id}</span>
       {t.capacity > 0 && <span className="text-[10px] opacity-50">{t.capacity}p</span>}
       {res && (
-        <span className="text-[10px] mt-0.5 truncate max-w-full px-1 leading-tight opacity-90">
+        <span className="text-[10px] mt-0.5 truncate max-w-full px-1 leading-tight">
           {res.name}
         </span>
       )}
       {countdown && (
-        <span className={`text-[9px] font-mono mt-0.5 ${countdown.urgent ? 'font-bold' : 'opacity-40'}`}>
+        <span className={`text-[9px] font-mono mt-0.5 ${countdown.urgent ? 'font-bold' : 'opacity-50'}`}>
           {countdown.text}
         </span>
       )}
@@ -164,7 +156,7 @@ export default function TableMapClient({ userEmail }: { userEmail: string }) {
   const [selectedSlot,  setSelectedSlot]  = useState(() => pickSlot(today, Date.now()))
   const [allRes,        setAllRes]        = useState<Reservation[]>([])
   const [loading,       setLoading]       = useState(true)
-  const [detail,        setDetail]        = useState<{ table: string; res: Reservation } | null>(null)
+  const [modalTable,    setModalTable]    = useState<string | null>(null)
   const [actionLoading, setActionLoading] = useState<string | null>(null)
 
   // ── Data fetching ──────────────────────────────────────────────────────────
@@ -179,25 +171,22 @@ export default function TableMapClient({ userEmail }: { userEmail: string }) {
     }
   }, [])
 
-  // Reload when date changes; also auto-pick the best slot
   useEffect(() => {
     loadDay(date)
     setSelectedSlot(pickSlot(date, Date.now()))
   }, [date, loadDay])
 
-  // Tick every second for live countdowns
   useEffect(() => {
     const id = setInterval(() => setNow(Date.now()), 1000)
     return () => clearInterval(id)
   }, [])
 
-  // Silent refresh every 30 s to pick up new reservations
   useEffect(() => {
     const id = setInterval(() => loadDay(date), 30_000)
     return () => clearInterval(id)
   }, [date, loadDay])
 
-  // ── Derived: reservation count per slot ────────────────────────────────────
+  // ── Derived ────────────────────────────────────────────────────────────────
   const slotCounts = useMemo(() => {
     const c: Record<string, number> = {}
     allRes
@@ -206,7 +195,6 @@ export default function TableMapClient({ userEmail }: { userEmail: string }) {
     return c
   }, [allRes])
 
-  // ── Derived: confirmed + pending maps for the selected slot ────────────────
   const { tableMap, pendingMap } = useMemo(() => {
     const tMap: Record<string, Reservation> = {}
     const pMap: Record<string, Reservation> = {}
@@ -223,7 +211,7 @@ export default function TableMapClient({ userEmail }: { userEmail: string }) {
 
   const isToday = date === today
 
-  // ── Status & countdown helpers ─────────────────────────────────────────────
+  // ── Status & countdown ─────────────────────────────────────────────────────
   function getStatus(id: string): TableStatus {
     const res = tableMap[id]
     if (!res) return pendingMap[id] ? 'pending' : 'free'
@@ -240,8 +228,7 @@ export default function TableMapClient({ userEmail }: { userEmail: string }) {
     const ms      = crToMs(res.date, res.time)
     const diff    = ms - now
     const elapsed = now - ms
-    if (diff > 0)
-      return { text: `en ${fmtCountdown(diff)}`, urgent: diff < 5 * 60 * 1000 }
+    if (diff > 0) return { text: `en ${fmtCountdown(diff)}`, urgent: diff < 5 * 60 * 1000 }
     if (elapsed <= ARRIVAL_WINDOW_MS)
       return { text: `↓ ${fmtCountdown(ARRIVAL_WINDOW_MS - elapsed)}`, urgent: true }
     return null
@@ -256,20 +243,9 @@ export default function TableMapClient({ userEmail }: { userEmail: string }) {
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify({ id, status }),
       })
-      setDetail(null)
+      setModalTable(null)
       await loadDay(date)
     } finally { setActionLoading(null) }
-  }
-
-  function handleTableClick(id: string) {
-    const status = getStatus(id)
-    if (status === 'free') {
-      const zone = id.endsWith('SA') ? 'salon' : 'terraza'
-      router.push(`/admin/new-reservation?date=${date}&time=${selectedSlot}&zone=${zone}&table=${id}`)
-      return
-    }
-    const res = tableMap[id] ?? pendingMap[id]
-    if (res) setDetail({ table: id, res })
   }
 
   async function handleSignOut() {
@@ -278,152 +254,132 @@ export default function TableMapClient({ userEmail }: { userEmail: string }) {
     router.push('/admin/login')
   }
 
-  // ── Modal computed values ──────────────────────────────────────────────────
-  const detailStatus = detail ? getStatus(detail.table) : null
-  const windowMs     = detail && detailStatus === 'arriving'
-    ? ARRIVAL_WINDOW_MS - (now - crToMs(detail.res.date, detail.res.time))
-    : null
-  const inArrivalMode = detailStatus === 'arriving' || detailStatus === 'overdue'
+  // ── Modal data ─────────────────────────────────────────────────────────────
+  // For the selected table: confirmed + pending reservations in current slot
+  const modalReservations = modalTable
+    ? [tableMap[modalTable], pendingMap[modalTable]].filter(Boolean) as Reservation[]
+    : []
 
-  // ── Render ─────────────────────────────────────────────────────────────────
+  const newResUrl = modalTable
+    ? `/admin/new-reservation?date=${date}&time=${selectedSlot}&zone=${
+        modalTable.endsWith('SA') ? 'salon' : 'terraza'
+      }&table=${modalTable}`
+    : '/admin/new-reservation'
+
+  // ─── Render ────────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100">
+    <div className="min-h-screen bg-gray-50 text-gray-900">
 
-      {/* ── Header ───────────────────────────────────────────────────────── */}
-      <header className="border-b border-zinc-800 bg-zinc-900/50 backdrop-blur-sm sticky top-0 z-10">
+      {/* ── Header ──────────────────────────────────────────────────────────── */}
+      <header className="border-b border-gray-200 bg-white/95 backdrop-blur-sm sticky top-0 z-10 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
-              <span className="text-orange-400 font-bold text-sm">N</span>
+            <div className="w-8 h-8 rounded-lg bg-orange-50 border border-orange-200 flex items-center justify-center">
+              <span className="text-orange-500 font-bold text-sm">N</span>
             </div>
-            <span className="text-white font-semibold text-sm">Nanku Admin</span>
+            <span className="text-gray-900 font-semibold text-sm">Nanku Admin</span>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-zinc-500 text-sm hidden md:block">{userEmail}</span>
+            <span className="text-gray-400 text-sm hidden md:block">{userEmail}</span>
             <button onClick={handleSignOut}
-              className="text-zinc-400 hover:text-white text-sm transition px-3 py-1.5 rounded-lg hover:bg-zinc-800">
+              className="text-gray-500 hover:text-gray-900 text-sm transition px-3 py-1.5 rounded-lg hover:bg-gray-100">
               Sign out
             </button>
           </div>
         </div>
-        <div className="border-t border-zinc-800/50 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="border-t border-gray-200 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AdminNav />
         </div>
       </header>
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-        {/* ── Title + date nav ─────────────────────────────────────────── */}
+        {/* ── Title + date nav ──────────────────────────────────────────────── */}
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
           <div>
-            <h1 className="text-2xl font-bold text-white">Mapa de Mesas</h1>
-            {!isToday && (
-              <p className="text-zinc-500 text-sm mt-0.5">{formatDateCR(date)}</p>
-            )}
+            <h1 className="text-2xl font-bold text-gray-900">Mapa de Mesas</h1>
+            {!isToday && <p className="text-gray-400 text-sm mt-0.5">{formatDateCR(date)}</p>}
           </div>
           <div className="flex items-center gap-2">
             <button onClick={() => setDate(d => addDays(d, -1))}
-              className="p-2 rounded-lg border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-600 transition">
+              className="p-2 rounded-lg border border-gray-200 bg-white text-gray-500 hover:text-gray-900 hover:border-gray-300 transition">
               ◀
             </button>
             <button onClick={() => setDate(today)}
               className={`px-4 py-1.5 rounded-lg border text-sm transition ${
                 isToday
-                  ? 'border-orange-500/40 bg-orange-500/10 text-orange-400'
-                  : 'border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-white'
+                  ? 'border-orange-400/60 bg-orange-50 text-orange-600'
+                  : 'border-gray-200 bg-white text-gray-500 hover:border-gray-300 hover:text-gray-900'
               }`}>
               Hoy
             </button>
             <button onClick={() => setDate(d => addDays(d, 1))}
-              className="p-2 rounded-lg border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-600 transition">
+              className="p-2 rounded-lg border border-gray-200 bg-white text-gray-500 hover:text-gray-900 hover:border-gray-300 transition">
               ▶
             </button>
           </div>
         </div>
 
-        {/* ── Slot buttons ─────────────────────────────────────────────── */}
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 mb-5 space-y-3">
+        {/* ── Slot buttons ──────────────────────────────────────────────────── */}
+        <div className="rounded-xl border border-gray-200 bg-white p-4 mb-5 space-y-3 shadow-sm">
           <div>
-            <p className="text-zinc-600 text-[11px] font-semibold uppercase tracking-widest mb-2">
-              Almuerzo
-            </p>
+            <p className="text-gray-400 text-[11px] font-semibold uppercase tracking-widest mb-2">Almuerzo</p>
             <div className="flex flex-wrap gap-2">
               {LUNCH_SLOTS.map(s => (
-                <SlotButton
-                  key={s} slot={s}
-                  count={slotCounts[s] ?? 0}
-                  selected={selectedSlot === s}
-                  onClick={() => setSelectedSlot(s)}
-                />
+                <SlotButton key={s} slot={s} count={slotCounts[s] ?? 0}
+                  selected={selectedSlot === s} onClick={() => setSelectedSlot(s)} />
               ))}
             </div>
           </div>
           <div>
-            <p className="text-zinc-600 text-[11px] font-semibold uppercase tracking-widest mb-2">
-              Cena
-            </p>
+            <p className="text-gray-400 text-[11px] font-semibold uppercase tracking-widest mb-2">Cena</p>
             <div className="flex flex-wrap gap-2">
               {DINNER_SLOTS.map(s => (
-                <SlotButton
-                  key={s} slot={s}
-                  count={slotCounts[s] ?? 0}
-                  selected={selectedSlot === s}
-                  onClick={() => setSelectedSlot(s)}
-                />
+                <SlotButton key={s} slot={s} count={slotCounts[s] ?? 0}
+                  selected={selectedSlot === s} onClick={() => setSelectedSlot(s)} />
               ))}
             </div>
           </div>
         </div>
 
-        {/* ── Legend ───────────────────────────────────────────────────── */}
-        <div className="flex gap-4 flex-wrap text-xs text-zinc-500 mb-5">
-          <LegendDot color="border-emerald-700 bg-emerald-950/30" label="Libre" />
-          <LegendDot color="border-amber-500  bg-amber-950/20"   label="Pendiente" />
-          <LegendDot color="border-sky-500    bg-sky-950/20"     label="Confirmada" />
-          <LegendDot color="border-orange-500 bg-orange-950/30"  label="Llega ahora" />
-          <LegendDot color="border-red-600    bg-red-950/30"     label="Sin confirmar" />
+        {/* ── Legend ────────────────────────────────────────────────────────── */}
+        <div className="flex gap-4 flex-wrap text-xs text-gray-400 mb-5">
+          <LegendDot color="border-emerald-400 bg-emerald-50"  label="Libre" />
+          <LegendDot color="border-amber-400   bg-amber-50"    label="Pendiente" />
+          <LegendDot color="border-sky-400     bg-sky-50"      label="Confirmada" />
+          <LegendDot color="border-orange-500  bg-orange-50"   label="Llega ahora" />
+          <LegendDot color="border-red-400     bg-red-50"      label="Sin confirmar" />
         </div>
 
-        {/* ── Table grids ──────────────────────────────────────────────── */}
+        {/* ── Table grids ───────────────────────────────────────────────────── */}
         {loading ? (
-          <div className="rounded-xl border border-zinc-800 bg-zinc-900/30 p-12 text-center text-zinc-600 text-sm animate-pulse">
+          <div className="rounded-xl border border-gray-200 bg-white p-12 text-center text-gray-400 text-sm animate-pulse shadow-sm">
             Cargando mesas…
           </div>
         ) : (
           <>
-            {/* Salón */}
-            <div className="rounded-xl border border-zinc-800 bg-zinc-900/30 p-5 mb-4">
-              <h2 className="text-orange-400 text-sm font-semibold uppercase tracking-wide mb-4">
-                🌿 Salón
-              </h2>
+            <div className="rounded-xl border border-gray-200 bg-white p-5 mb-4 shadow-sm">
+              <h2 className="text-orange-500 text-sm font-semibold uppercase tracking-wide mb-4">🌿 Salón</h2>
               <div className="grid grid-cols-4 sm:grid-cols-6 gap-3">
                 {SALON_TABLES.filter(t => !t.hidden).map(t => (
-                  <TableCell
-                    key={t.id} t={t}
-                    wide={t.id === '06SA'}
+                  <TableCell key={t.id} t={t} wide={t.id === '06SA'}
                     status={getStatus(t.id)}
                     countdown={getCountdown(t.id)}
                     res={tableMap[t.id] ?? pendingMap[t.id]}
-                    onClick={() => handleTableClick(t.id)}
-                  />
+                    onClick={() => setModalTable(t.id)} />
                 ))}
               </div>
             </div>
 
-            {/* Terraza */}
-            <div className="rounded-xl border border-zinc-800 bg-zinc-900/30 p-5">
-              <h2 className="text-orange-400 text-sm font-semibold uppercase tracking-wide mb-4">
-                🌤 Terraza
-              </h2>
+            <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+              <h2 className="text-orange-500 text-sm font-semibold uppercase tracking-wide mb-4">🌤 Terraza</h2>
               <div className="grid grid-cols-4 sm:grid-cols-7 gap-3">
                 {TERRAZA_TABLES.map(t => (
-                  <TableCell
-                    key={t.id} t={t}
+                  <TableCell key={t.id} t={t}
                     status={getStatus(t.id)}
                     countdown={getCountdown(t.id)}
                     res={tableMap[t.id] ?? pendingMap[t.id]}
-                    onClick={() => handleTableClick(t.id)}
-                  />
+                    onClick={() => setModalTable(t.id)} />
                 ))}
               </div>
             </div>
@@ -431,123 +387,147 @@ export default function TableMapClient({ userEmail }: { userEmail: string }) {
         )}
       </main>
 
-      {/* ── Detail modal ─────────────────────────────────────────────────── */}
-      {detail && (
-        <div
-          className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"
-          onClick={() => setDetail(null)}
-        >
-          <div
-            className="bg-zinc-900 border border-zinc-700 rounded-2xl p-6 w-full max-w-sm relative"
-            onClick={e => e.stopPropagation()}
-          >
-            <button
-              onClick={() => setDetail(null)}
-              className="absolute top-4 right-4 text-zinc-500 hover:text-white text-lg leading-none"
-            >
-              ✕
-            </button>
+      {/* ── Table modal ───────────────────────────────────────────────────────── */}
+      {modalTable && (
+        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4"
+          onClick={() => setModalTable(null)}>
+          <div className="bg-white border border-gray-200 rounded-2xl w-full max-w-sm shadow-xl relative overflow-hidden"
+            onClick={e => e.stopPropagation()}>
+            <button onClick={() => setModalTable(null)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-lg leading-none">✕</button>
 
-            {/* Arrival window banner */}
-            {inArrivalMode && (
-              <div className={`mb-5 rounded-xl p-4 border ${
-                detailStatus === 'arriving'
-                  ? 'border-orange-500/30 bg-orange-500/10'
-                  : 'border-red-500/30 bg-red-950/30'
-              }`}>
-                <p className={`text-sm font-semibold text-center mb-1 ${
-                  detailStatus === 'arriving' ? 'text-orange-400' : 'text-red-400'
-                }`}>
-                  {detailStatus === 'arriving'
-                    ? '⏱ ¿Llegaron los clientes?'
-                    : '⚠ Ventana de llegada vencida'}
-                </p>
-                {windowMs !== null && (
-                  <p className="text-[11px] text-center text-zinc-500 mb-3 font-mono">
-                    {fmtCountdown(windowMs)} para confirmar
-                  </p>
-                )}
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => quickAction(detail.res.id, 'confirmed')}
-                    disabled={!!actionLoading}
-                    className="flex-1 py-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-sm font-semibold hover:bg-emerald-500/20 disabled:opacity-50 transition"
-                  >
-                    {actionLoading === detail.res.id + 'confirmed' ? '…' : '✓ Sí llegaron'}
-                  </button>
-                  <button
-                    onClick={() => quickAction(detail.res.id, 'no_show')}
-                    disabled={!!actionLoading}
-                    className="flex-1 py-2.5 rounded-xl bg-red-500/10 border border-red-500/25 text-red-400 text-sm font-semibold hover:bg-red-500/20 disabled:opacity-50 transition"
-                  >
-                    {actionLoading === detail.res.id + 'no_show' ? '…' : '✕ No llegaron'}
-                  </button>
-                </div>
-              </div>
-            )}
-
-            <h3 className="text-orange-400 font-semibold text-lg mb-4">
-              Mesa {detail.table}
-            </h3>
-
-            <dl className="space-y-2 text-sm mb-4">
-              {([
-                ['Nombre',   detail.res.name],
-                ['Hora',     formatTimeCR(detail.res.time)],
-                ['Personas', `${detail.res.party_size} pax`],
-                ['Teléfono', detail.res.phone || '—'],
-              ] as [string, string][]).map(([k, v]) => (
-                <div key={k} className="flex justify-between">
-                  <dt className="text-zinc-500">{k}</dt>
-                  <dd className="text-zinc-200 font-medium">{v}</dd>
-                </div>
-              ))}
-              <div className="flex justify-between items-center">
-                <dt className="text-zinc-500">Estado</dt>
-                <dd>
-                  <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium border ${STATUS_STYLES[detail.res.status]}`}>
-                    {STATUS_LABELS[detail.res.status]}
-                  </span>
-                </dd>
-              </div>
-            </dl>
-
-            {detail.res.notes && (
-              <p className="text-zinc-500 text-xs italic border-t border-zinc-800 pt-3 mb-4">
-                {detail.res.notes}
+            {/* Table header */}
+            <div className="px-6 pt-5 pb-4 border-b border-gray-100">
+              <h3 className="text-gray-900 font-bold text-lg">Mesa {modalTable}</h3>
+              <p className="text-gray-400 text-sm mt-0.5">
+                Turno {formatTimeCR(selectedSlot)} · {formatDateCR(date)}
               </p>
-            )}
+            </div>
 
-            {/* Standard actions (non-arrival states) */}
-            {!inArrivalMode && (
-              <div className="flex gap-2 flex-wrap mb-2">
-                {detail.res.status === 'pending' && (
-                  <button
-                    onClick={() => quickAction(detail.res.id, 'confirmed')}
-                    disabled={!!actionLoading}
-                    className="flex-1 text-xs py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 disabled:opacity-50 transition"
-                  >
-                    {actionLoading ? '…' : '✔ Confirmar'}
-                  </button>
-                )}
-                {(detail.res.status === 'pending' || detail.res.status === 'confirmed') && (
-                  <button
-                    onClick={() => quickAction(detail.res.id, 'cancelled')}
-                    disabled={!!actionLoading}
-                    className="flex-1 text-xs py-2 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 disabled:opacity-50 transition"
-                  >
-                    {actionLoading ? '…' : '✕ Cancelar'}
-                  </button>
-                )}
-              </div>
-            )}
+            <div className="px-6 py-4 space-y-4">
+              {/* Reservation list */}
+              {modalReservations.length === 0 ? (
+                <div className="text-center py-4">
+                  <div className="text-3xl mb-2">🟢</div>
+                  <p className="text-gray-500 text-sm font-medium">Mesa libre para este turno</p>
+                  <p className="text-gray-400 text-xs mt-1">No hay reservas asignadas</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <p className="text-gray-500 text-xs uppercase tracking-wide font-semibold">
+                    Reservas · {selectedSlot}
+                  </p>
+                  {modalReservations.map(res => {
+                    const status = getStatus(modalTable)
+                    const inArrival = status === 'arriving' || status === 'overdue'
+                    const windowMs = status === 'arriving'
+                      ? ARRIVAL_WINDOW_MS - (now - crToMs(res.date, res.time))
+                      : null
 
-            <Link
-              href={`/admin/new-reservation?id=${detail.res.id}`}
-              className="block text-center text-xs py-2 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white transition"
-            >
-              ✏ Editar reserva
-            </Link>
+                    return (
+                      <div key={res.id} className={`rounded-xl p-4 border ${
+                        inArrival
+                          ? status === 'arriving'
+                            ? 'border-orange-200 bg-orange-50'
+                            : 'border-red-200 bg-red-50'
+                          : 'border-gray-100 bg-gray-50'
+                      }`}>
+                        {/* Arrival window */}
+                        {inArrival && (
+                          <div className="mb-3">
+                            <p className={`text-sm font-semibold mb-1 ${
+                              status === 'arriving' ? 'text-orange-600' : 'text-red-600'
+                            }`}>
+                              {status === 'arriving' ? '⏱ ¿Llegaron los clientes?' : '⚠ Ventana vencida'}
+                            </p>
+                            {windowMs !== null && (
+                              <p className="text-[11px] text-gray-400 font-mono mb-2">
+                                {fmtCountdown(windowMs)} para confirmar
+                              </p>
+                            )}
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => quickAction(res.id, 'confirmed')}
+                                disabled={!!actionLoading}
+                                className="flex-1 py-2 rounded-lg bg-emerald-500/10 border border-emerald-400/30 text-emerald-700 text-xs font-semibold hover:bg-emerald-500/20 disabled:opacity-50 transition">
+                                {actionLoading === res.id + 'confirmed' ? '…' : '✓ Sí llegaron'}
+                              </button>
+                              <button
+                                onClick={() => quickAction(res.id, 'no_show')}
+                                disabled={!!actionLoading}
+                                className="flex-1 py-2 rounded-lg bg-red-500/10 border border-red-400/30 text-red-600 text-xs font-semibold hover:bg-red-500/20 disabled:opacity-50 transition">
+                                {actionLoading === res.id + 'no_show' ? '…' : '✕ No llegaron'}
+                              </button>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Reservation details */}
+                        <div className="space-y-1 text-sm">
+                          <div className="flex justify-between">
+                            <span className="text-gray-500">Nombre</span>
+                            <span className="text-gray-900 font-medium">{res.name}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-500">Personas</span>
+                            <span className="text-gray-700">{res.party_size} pax</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-500">Teléfono</span>
+                            <span className="text-gray-700 font-mono text-xs">{res.phone || '—'}</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-500">Estado</span>
+                            <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium border ${STATUS_STYLES[res.status]}`}>
+                              {STATUS_LABELS[res.status]}
+                            </span>
+                          </div>
+                        </div>
+
+                        {res.notes && (
+                          <p className="text-gray-400 text-xs italic border-t border-gray-200 pt-2 mt-2">{res.notes}</p>
+                        )}
+
+                        {/* Standard actions (non-arrival) */}
+                        {!inArrival && (
+                          <div className="flex gap-2 mt-3">
+                            {res.status === 'pending' && (
+                              <button onClick={() => quickAction(res.id, 'confirmed')} disabled={!!actionLoading}
+                                className="flex-1 text-xs py-1.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 hover:bg-emerald-100 disabled:opacity-50 transition">
+                                ✔ Confirmar
+                              </button>
+                            )}
+                            {(res.status === 'pending' || res.status === 'confirmed') && (
+                              <button onClick={() => quickAction(res.id, 'cancelled')} disabled={!!actionLoading}
+                                className="flex-1 text-xs py-1.5 rounded-lg bg-red-50 border border-red-200 text-red-600 hover:bg-red-100 disabled:opacity-50 transition">
+                                ✕ Cancelar
+                              </button>
+                            )}
+                            <Link href={`/admin/new-reservation?id=${res.id}`}
+                              className="text-xs px-3 py-1.5 rounded-lg border border-gray-200 text-gray-500 hover:text-gray-800 hover:border-gray-300 transition">
+                              ✏
+                            </Link>
+                          </div>
+                        )}
+                        {inArrival && (
+                          <Link href={`/admin/new-reservation?id=${res.id}`}
+                            className="mt-2 block text-center text-xs py-1.5 rounded-lg border border-gray-200 text-gray-400 hover:text-gray-700 transition">
+                            ✏ Editar reserva
+                          </Link>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
+
+              {/* Create new reservation button */}
+              <Link
+                href={newResUrl}
+                className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold transition shadow-sm">
+                + Crear reserva para esta mesa
+              </Link>
+            </div>
           </div>
         </div>
       )}

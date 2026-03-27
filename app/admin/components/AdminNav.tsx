@@ -25,8 +25,8 @@ export default function AdminNav() {
             href={item.href}
             className={`flex items-center gap-1.5 px-4 py-3 text-sm font-medium border-b-2 whitespace-nowrap transition ${
               isActive
-                ? 'border-orange-500 text-orange-400'
-                : 'border-transparent text-zinc-400 hover:text-zinc-200'
+                ? 'border-orange-500 text-orange-500'
+                : 'border-transparent text-gray-500 hover:text-gray-700'
             }`}
           >
             {item.label}

@@ -562,7 +562,7 @@ export default function MenuClient({ lang = 'en' }: { lang?: 'en' | 'es' }) {
       {panel === 'drinks' && (
         <div className="nm-drinks-sections">
           <section className="nm-drinks-section" id="licores">
-            <DrinksHeader title="Licores" />
+            <DrinksHeader title="Licores / Liqueur" />
             <DSub title="Whiskey">
               <DPriceRow name="Macallan 12 años" price="₡10,500" />
               <DPriceRow name="Glen Fiddich 12 años" price="₡5,500" />
@@ -607,22 +607,10 @@ export default function MenuClient({ lang = 'en' }: { lang?: 'en' | 'es' }) {
               <DPriceRow name="Ketel One" price="₡4,000" />
               <DPriceRow name="Cîroc" price="₡4,500" />
             </DSub>
-            <DSub title="Rones / Rum">
-              <DPriceRow name="Capitán Morgan" price="₡2,500" />
-              <DPriceRow name="Centenario 7 años" price="₡3,500" />
-              <DPriceRow name="Flor de Caña 7 años" price="₡3,000" />
-              <DPriceRow name="Flor de Caña 12 años" price="₡4,300" />
-              <DPriceRow name="Flor de Caña 18 años" price="₡5,000" />
-              <DPriceRow name="Centenario 20 años" price="₡5,500" />
-              <DPriceRow name="Zacapa 23 años" price="₡5,900" />
-              <DPriceRow name="Cachaça" price="₡2,500" />
-              <DPriceRow name="Cacique" price="₡2,000" />
-              <DPriceRow name="Appleton Estate" price="₡4,000" />
-            </DSub>
             <DSub title="Aperitivo & Digestivo">
               <DPriceRow name="Jägermeister" price="₡2,500" />
               <DPriceRow name="Licor 43" price="₡2,500" />
-              <DPriceRow name="Cointreau" price="₡4,100" />
+              <DPriceRow name="Cointreau" price="₡4,000" />
               <DPriceRow name="Grand Marnier" price="₡4,500" />
               <DPriceRow name="Café Rica" price="₡3,500" />
               <DPriceRow name="Disaronno" price="₡3,500" />
@@ -636,15 +624,27 @@ export default function MenuClient({ lang = 'en' }: { lang?: 'en' | 'es' }) {
               <DPriceRow name="Courvoisier VSOP" price="₡7,000" />
               <DPriceRow name="Hennessy VSOP" price="₡10,000" />
             </DSub>
+            <DSub title="Rones / Rum">
+              <DPriceRow name="Capitán Morgan" price="₡2,500" />
+              <DPriceRow name="Centenario 7 años" price="₡3,500" />
+              <DPriceRow name="Flor de Caña 7 años" price="₡3,000" />
+              <DPriceRow name="Flor de Caña 12 años" price="₡4,300" />
+              <DPriceRow name="Flor de Caña 18 años" price="₡5,500" />
+              <DPriceRow name="Centenario 20 años" price="₡5,500" />
+              <DPriceRow name="Zacapa 23 años" price="₡5,900" />
+              <DPriceRow name="Cachaça" price="₡2,500" />
+              <DPriceRow name="Cacique" price="₡2,000" />
+              <DPriceRow name="Appleton Estate" price="₡4,000" />
+            </DSub>
           </section>
 
           <section className="nm-drinks-section" id="bebidas">
-            <DrinksHeader title="Gaseosas & Aguas" />
+            <DrinksHeader title="Gaseosas & Aguas / Soft Drinks & Water" />
             <DSub title="Agua / Water">
-              <DPriceRow name="Large Sparkling Water" price="₡3,500" />
-              <DPriceRow name="Small Sparkling Water" price="₡2,200" />
-              <DPriceRow name="Large Water" price="₡3,500" />
-              <DPriceRow name="Small Water" price="₡1,500" />
+              <DPriceRow name="Agua con gas grande / Large Sparkling Water" price="₡3,500" />
+              <DPriceRow name="Agua con gas pequeña / Small Sparkling Water" price="₡2,200" />
+              <DPriceRow name="Agua grande / Large Water" price="₡3,500" />
+              <DPriceRow name="Agua pequeña / Small Water" price="₡1,500" />
             </DSub>
             <DSub title="Gaseosas / Soft Drinks">
               <DPriceRow name="Coca Cola / Coke" price="₡1,800" />
@@ -652,11 +652,13 @@ export default function MenuClient({ lang = 'en' }: { lang?: 'en' | 'es' }) {
               <DPriceRow name="Ginger Ale" price="₡1,800" />
               <DPriceRow name="Fresco" price="₡1,800" />
               <DPriceRow name="Fanta Naranja / Orange Fanta" price="₡1,800" />
+              <DPriceRow name="Fanta Uva / Grape Fanta" price="₡1,800" />
+              <DPriceRow name="Fanta Kolita / Red Fanta" price="₡1,800" />
               <DPriceRow name="Sprite" price="₡1,800" />
             </DSub>
             <div className="nm-dsub">
               <div className="nm-dsub-title">Batidos de Frutas / Fruit Smoothies</div>
-              <p className="nm-batidos-note">Flavors: Mango · Blackberry · Strawberry · Banana · Soursop · Passion Fruit · Pineapple</p>
+              <p className="nm-batidos-note">Sabores / Flavors: Mango · Mora/Blackberry · Fresa/Strawberry · Banano · Guanábana/Soursop · Maracuyá/Passion Fruit · Piña/Pineapple</p>
               <div className="nm-dprice-grid">
                 <DPriceRow name="1 Fruta / 1 Fruit" price="₡1,500" />
                 <DPriceRow name="2 Frutas / 2 Fruits" price="₡2,000" />
@@ -664,40 +666,54 @@ export default function MenuClient({ lang = 'en' }: { lang?: 'en' | 'es' }) {
               </div>
             </div>
             <DSub title="Limonadas / Lemonade">
-              <DPriceRow name="Lemonade" price="₡1,500" />
-              <DPriceRow name="Lemonade with Mint" price="₡2,000" />
-              <DPriceRow name="Ginger Lemonade" price="₡2,000" />
+              <DPriceRow name="Limonada / Lemonade" price="₡1,500" />
+              <DPriceRow name="Limonada con Hierba Buena / Lemonade with Mint" price="₡2,000" />
+              <DPriceRow name="Limonada con Gengibre / Ginger Lemonade" price="₡2,000" />
             </DSub>
           </section>
 
           <section className="nm-drinks-section" id="cervezas">
-            <DrinksHeader title="Cervezas" />
-            <DSub title="Local Craft on Draft">
-              <DPriceRow name="Pinta / Pint (500ml)" price="₡4,000" />
-              <DPriceRow name="Media / Half Pint (250ml)" price="₡2,500" />
+            <DrinksHeader title="Cervezas / Beer" />
+            <DSub title="Artesanal Local en Sifón / Local Craft on Draft">
+              <DPriceRow name="Indómito IPA 7.6%" price="₡4,500" />
+              <DPriceRow name="Libertas Golden Ale 4.3%" price="₡4,500" />
+              <DPriceRow name="Segua Red Ale 4.8%" price="₡4,500" />
+              <DPriceRow name="Nanku Premium Lager 4.3%" price="₡4,500" />
+              <DPriceRow name="Passion de Maracuyá" price="₡4,500" />
             </DSub>
-            <DSub title="Cervezas Nacionales / National Beer">
-              <DPriceRow name="Imperial" price="₡2,500" />
-              <DPriceRow name="Pilsen" price="₡2,500" />
-              <DPriceRow name="Bavaria" price="₡2,500" />
+            <DSub title="Artesanal Local en Botella / Local Craft on Bottle">
+              <DPriceRow name="Mama Candela" price="₡4,500" />
             </DSub>
-            <DSub title="Cervezas Importadas / Imported Beer">
-              <DPriceRow name="Corona" price="₡3,000" />
-              <DPriceRow name="Heineken" price="₡3,000" />
-              <DPriceRow name="Stella Artois" price="₡3,000" />
+            <DSub title="Cerveza sin Gluten / Gluten-Free Beer">
+              <DPriceRow name="Daura Damm" price="₡3,000" />
+            </DSub>
+            <DSub title="Las Lager">
+              <DPriceRow name="Imperial" price="₡1,900" />
+              <DPriceRow name="Imperial Silver" price="₡1,900" />
+              <DPriceRow name="Imperial Light" price="₡1,900" />
+              <DPriceRow name="Imperial Ultra" price="₡1,900" />
+              <DPriceRow name="Pilsen" price="₡1,900" />
+              <DPriceRow name="Bavaria Gold" price="₡2,200" />
+              <DPriceRow name="Bavaria Light" price="₡2,200" />
+            </DSub>
+            <DSub title="Importadas / Imported">
+              <DPriceRow name="Heineken" price="₡2,200" />
+              <DPriceRow name="Corona" price="₡2,200" />
+              <DPriceRow name="Sol" price="₡2,200" />
             </DSub>
           </section>
 
           <section className="nm-drinks-section" id="tiki">
-            <DrinksHeader title="Tiki Cocktails" />
+            <DrinksHeader title="Cócteles Tiki / Tiki Cocktails" />
             <div className="nm-cktl-grid">
               {[
-                { name: 'Arenal Volcano Punch', price: '₡5,000', desc: 'Dark rum, passion fruit, mango, lime, grenadine.' },
-                { name: 'Jungle Bird', price: '₡5,000', desc: 'Campari, dark rum, pineapple juice, lime, simple syrup.' },
-                { name: 'Blue Lagoon Tiki', price: '₡5,000', desc: 'Coconut rum, blue curaçao, pineapple, lime.' },
-                { name: 'Nanku Sunset', price: '₡5,500', desc: 'Our signature blend of tropical spirits, fresh citrus and exotic fruit.' },
-                { name: 'Volcanic Night', price: '₡5,500', desc: 'Dark rum, spiced rum, blackberry, fresh lime, ginger beer.' },
-                { name: 'Jungle Elixir', price: '₡5,500', desc: 'Mezcal, cucumber, basil, jalapeño, lime, agave nectar.' },
+                { name: 'Pura Vida', price: '₡8,000', desc: 'Ron Blanco, Vodka, Ginebra, Jugo de Piña, Miel, Limón, Carambola.' },
+                { name: 'Julia', price: '₡8,000', desc: 'Ron Añejo, Piña, Jarabe de Jengibre, Limón, Zumo de Arándanos.' },
+                { name: 'Nanku', price: '₡8,000', desc: 'Ron Oscuro, Ron Blanco, Limón, Jarabe de Canela, Mango.' },
+                { name: 'A Cachete', price: '₡8,000', desc: 'Ron Añejo, Jugo de Sandía, Limón, Jugo de Piña, Jarabe de Canela, Malibú, Blue Curaçao.' },
+                { name: 'Tuanis', price: '₡8,000', desc: 'Ron Blanco, Ron Oscuro, Jarabe, Limón, Jamaica, Jengibre.' },
+                { name: 'Jack Sparrow', price: '₡8,000', desc: 'Campari, Jack Daniel\'s, Maracuyá, Jarabe de Jengibre, Jugo de Naranja.' },
+                { name: 'Mai Tai', price: '₡8,000', desc: 'Ron, Cointreau, Limón, Azúcar, Almíbar de Horchata.' },
               ].map((c) => (
                 <div key={c.name} className="nm-cktl-card">
                   <div className="nm-cktl-top">
@@ -711,26 +727,85 @@ export default function MenuClient({ lang = 'en' }: { lang?: 'en' | 'es' }) {
           </section>
 
           <section className="nm-drinks-section" id="cocteles">
-            <DrinksHeader title="Cócteles" />
-            <div className="nm-cktl-grid">
-              {[
-                { name: 'Mango Habanero Margarita', price: '₡5,500', desc: 'Tequila, mango, habanero, lime, agave.' },
-                { name: 'Maracuyá Mezcalita', price: '₡5,500', desc: 'Mezcal, passion fruit, lime, salt rim.' },
-                { name: 'Coconut Lime Classic', price: '₡5,000', desc: 'Tequila blanco, coconut water, lime, mint.' },
-                { name: 'Caipirinha', price: '₡4,500', desc: 'Cachaça, fresh lime, sugar. The classic Brazilian cocktail.' },
-                { name: 'Mojito', price: '₡4,500', desc: 'White rum, fresh mint, lime, sugar, sparkling water.' },
-                { name: 'Piña Colada', price: '₡4,500', desc: 'Coconut rum, pineapple juice, coconut cream.' },
-                { name: 'Aperol Spritz', price: '₡4,800', desc: 'Aperol, prosecco, sparkling water, orange slice.' },
-                { name: 'Cosmopolitan', price: '₡4,800', desc: 'Vodka, triple sec, cranberry juice, lime.' },
-              ].map((c) => (
-                <div key={c.name} className="nm-cktl-card">
-                  <div className="nm-cktl-top">
-                    <h3 className="nm-cktl-name">{c.name}</h3>
-                    <span className="nm-cktl-price">{c.price}</span>
+            <DrinksHeader title="Cócteles / Cocktails" />
+
+            <div className="nm-dsub">
+              <div className="nm-dsub-title">Los Sours</div>
+              <div className="nm-cktl-grid">
+                {[
+                  { name: 'Guaro Sour Clásico', price: '₡3,500', desc: 'Guaro, limón, jarabe simple.' },
+                  { name: 'Guaro Sour Arándanos', price: '₡4,500', desc: 'Guaro, arándanos, limón, sirope de moras.' },
+                  { name: 'Whiskey Sour', price: '₡4,500', desc: 'Clara de huevo, limón, jarabe simple, Ezra Brooks Bourbon.' },
+                ].map((c) => (
+                  <div key={c.name} className="nm-cktl-card">
+                    <div className="nm-cktl-top">
+                      <h3 className="nm-cktl-name">{c.name}</h3>
+                      <span className="nm-cktl-price">{c.price}</span>
+                    </div>
+                    <p className="nm-cktl-desc">{c.desc}</p>
                   </div>
-                  <p className="nm-cktl-desc">{c.desc}</p>
-                </div>
-              ))}
+                ))}
+              </div>
+            </div>
+
+            <div className="nm-dsub">
+              <div className="nm-dsub-title">Margaritas</div>
+              <div className="nm-cktl-grid">
+                {[
+                  { name: 'Margarita Clásica', price: '₡4,000', desc: 'Tequila Jarana Blanco, triple sec, limón, jarabe simple.' },
+                  { name: 'Wild Passion Margarita', price: '₡4,500', desc: 'Infusión de tequila y jalapeño, triple sec, maracuyá y jarabe simple.' },
+                  { name: 'Margarita de Mango', price: '₡4,000', desc: 'Tequila Jarana Blanco, triple sec, mango, limón.' },
+                ].map((c) => (
+                  <div key={c.name} className="nm-cktl-card">
+                    <div className="nm-cktl-top">
+                      <h3 className="nm-cktl-name">{c.name}</h3>
+                      <span className="nm-cktl-price">{c.price}</span>
+                    </div>
+                    <p className="nm-cktl-desc">{c.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="nm-dsub">
+              <div className="nm-dsub-title">With a Twist</div>
+              <div className="nm-cktl-grid">
+                {[
+                  { name: 'Tom Collins de Fresa y Tomillo', price: '₡4,000', desc: 'Ginebra Master\'s, limón, jarabe de fresa y tomillo, soda.' },
+                  { name: 'Gin Tonic de Mandarina', price: '₡4,500', desc: 'Ginebra Martin Miller\'s, rosas persas, jugo de mandarina, agua tónica.' },
+                  { name: 'Mula Tica', price: '₡4,500', desc: 'Guaro Cacique, limón, cerveza de jengibre.' },
+                ].map((c) => (
+                  <div key={c.name} className="nm-cktl-card">
+                    <div className="nm-cktl-top">
+                      <h3 className="nm-cktl-name">{c.name}</h3>
+                      <span className="nm-cktl-price">{c.price}</span>
+                    </div>
+                    <p className="nm-cktl-desc">{c.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="nm-dsub">
+              <div className="nm-dsub-title">Los Clásicos / The Classics</div>
+              <div className="nm-cktl-grid">
+                {[
+                  { name: 'Mojito', price: '₡4,500', desc: 'Hierba buena fresca, limón, jarabe de hierba buena, ron blanco.' },
+                  { name: 'Piña Colada', price: '₡4,500', desc: 'Piña fresca, crema de coco, leche de coco, ron blanco.' },
+                  { name: 'Old Fashioned', price: '₡4,500', desc: 'Azúcar, amargos de angostura, Ezra Brooks Bourbon, cherry.' },
+                  { name: 'Negroni', price: '₡4,500', desc: 'Campari, Vermouth Rosso, Ginebra.' },
+                  { name: 'Aperol Spritz', price: '₡4,500', desc: 'Aperol, soda, vino espumante.' },
+                  { name: 'Long Island', price: '₡4,500', desc: 'Ron blanco, Vodka, Tequila, triple sec, ginebra, limón, azúcar, cola.' },
+                ].map((c) => (
+                  <div key={c.name} className="nm-cktl-card">
+                    <div className="nm-cktl-top">
+                      <h3 className="nm-cktl-name">{c.name}</h3>
+                      <span className="nm-cktl-price">{c.price}</span>
+                    </div>
+                    <p className="nm-cktl-desc">{c.desc}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </section>
         </div>
