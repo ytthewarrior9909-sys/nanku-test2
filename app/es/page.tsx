@@ -486,7 +486,6 @@ export default function HomePageES() {
       <section id="reviews" className="reviews-section">
         <div className="reviews-bg"></div>
         <ReviewsScroll lang="es" />
-        </div>
       </section>
 
       {/* RESERVATIONS */}

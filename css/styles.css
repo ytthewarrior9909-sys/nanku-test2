@@ -3563,7 +3563,7 @@ ul { list-style: none; }
 }
 @media (min-width: 600px) {
   .am-modal {
-    width: 60vw;
+    width: 40vw;
     height: 70vh;
     max-height: 70vh;
   }
@@ -4001,7 +4001,7 @@ ul { list-style: none; }
 }
 @media (min-width: 600px) {
   .nm-modal {
-    width: 60vw;
+    width: 40vw;
     height: 70vh;
     max-height: 70vh;
   }
