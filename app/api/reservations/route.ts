@@ -58,9 +58,10 @@ export async function POST(request: NextRequest) {
 
     // Fire webhook notification (non-blocking — errors do not affect the reservation)
     const webhookUrl = process.env.NEXT_PUBLIC_N8N_WEBHOOK_URL
+    console.log('[webhook] URL present:', !!webhookUrl)
     if (webhookUrl) {
       try {
-        await fetch(webhookUrl, {
+        const webhookRes = await fetch(webhookUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -74,9 +75,12 @@ export async function POST(request: NextRequest) {
             notes: notes?.trim() || null,
           }),
         })
+        console.log('[webhook] Response status:', webhookRes.status)
       } catch (webhookErr) {
-        console.error('Webhook notification failed:', webhookErr)
+        console.error('[webhook] Fetch failed:', webhookErr)
       }
+    } else {
+      console.warn('[webhook] NEXT_PUBLIC_N8N_WEBHOOK_URL is not set')
     }
 
     return NextResponse.json({ success: true }, { status: 201 })
