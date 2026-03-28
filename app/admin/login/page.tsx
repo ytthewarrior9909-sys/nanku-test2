@@ -33,21 +33,21 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-4">
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-orange-50 border border-orange-200 mb-4">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-orange-500/10 border border-orange-500/20 mb-4">
             <span className="text-orange-500 font-bold text-2xl">N</span>
           </div>
-          <h1 className="text-gray-900 text-2xl font-bold tracking-tight">Nanku Admin</h1>
-          <p className="text-gray-400 text-sm mt-1">Sign in to manage reservations</p>
+          <h1 className="text-white text-2xl font-bold tracking-tight">Nanku Admin</h1>
+          <p className="text-zinc-400 text-sm mt-1">Sign in to manage reservations</p>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1.5">
+            <label htmlFor="email" className="block text-zinc-300 text-sm font-medium mb-1.5">
               Email
             </label>
             <input
@@ -58,12 +58,12 @@ export default function AdminLoginPage() {
               placeholder="admin@nanku.com"
               required
               autoComplete="email"
-              className="w-full bg-white border border-gray-300 rounded-lg px-3.5 py-2.5 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition"
+              className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3.5 py-2.5 text-white placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition"
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1.5">
+            <label htmlFor="password" className="block text-zinc-300 text-sm font-medium mb-1.5">
               Password
             </label>
             <input
@@ -74,12 +74,12 @@ export default function AdminLoginPage() {
               placeholder="••••••••"
               required
               autoComplete="current-password"
-              className="w-full bg-white border border-gray-300 rounded-lg px-3.5 py-2.5 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition"
+              className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3.5 py-2.5 text-white placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition"
             />
           </div>
 
           {error && (
-            <div className="bg-red-50 border border-red-200 rounded-lg px-3.5 py-2.5 text-red-600 text-sm">
+            <div className="bg-red-900/20 border border-red-500/30 rounded-lg px-3.5 py-2.5 text-red-400 text-sm">
               {error}
             </div>
           )}
@@ -93,7 +93,7 @@ export default function AdminLoginPage() {
           </button>
         </form>
 
-        <p className="text-center text-gray-400 text-xs mt-6">
+        <p className="text-center text-zinc-500 text-xs mt-6">
           Nanku Tropical Bar &amp; Steakhouse · Admin Portal
         </p>
       </div>

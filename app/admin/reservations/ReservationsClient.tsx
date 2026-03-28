@@ -122,24 +122,24 @@ export default function ReservationsClient({ userEmail }: { userEmail: string })
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900">
+    <div className="min-h-screen bg-gray-50 dark:bg-zinc-950 text-gray-900 dark:text-white">
       {/* Header */}
-      <header className="border-b border-gray-200 bg-white/95 backdrop-blur-sm sticky top-0 z-10">
+      <header className="border-b border-gray-200 dark:border-zinc-800 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
               <span className="text-orange-400 font-bold text-sm">N</span>
             </div>
-            <span className="text-gray-900 font-semibold text-sm">Nanku Admin</span>
+            <span className="text-gray-900 dark:text-white font-semibold text-sm">Nanku Admin</span>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-gray-400 text-sm hidden md:block">{userEmail}</span>
-            <button onClick={handleSignOut} className="text-gray-500 hover:text-gray-900 text-sm transition px-3 py-1.5 rounded-lg hover:bg-gray-100">
+            <span className="text-gray-400 dark:text-zinc-500 text-sm hidden md:block">{userEmail}</span>
+            <button onClick={handleSignOut} className="text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white text-sm transition px-3 py-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800">
               Sign out
             </button>
           </div>
         </div>
-        <div className="border-t border-gray-200 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="border-t border-gray-200 dark:border-zinc-800 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AdminNav />
         </div>
       </header>
@@ -148,11 +148,11 @@ export default function ReservationsClient({ userEmail }: { userEmail: string })
         {/* Page header */}
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Todas las Reservas</h1>
-            <p className="text-gray-400 text-sm mt-0.5">{filtered.length} resultado{filtered.length !== 1 ? 's' : ''}</p>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Todas las Reservas</h1>
+            <p className="text-gray-400 dark:text-zinc-500 text-sm mt-0.5">{filtered.length} resultado{filtered.length !== 1 ? 's' : ''}</p>
           </div>
           <div className="flex gap-2">
-            <button onClick={exportCSV} className="px-3 py-2 rounded-lg border border-gray-300 text-gray-500 hover:text-gray-900 text-sm transition">
+            <button onClick={exportCSV} className="px-3 py-2 rounded-lg border border-gray-300 dark:border-zinc-600 text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white text-sm transition">
               ⬇ CSV
             </button>
             <Link href="/admin/new-reservation" className="px-4 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium transition">
@@ -162,22 +162,22 @@ export default function ReservationsClient({ userEmail }: { userEmail: string })
         </div>
 
         {/* Filters */}
-        <div className="rounded-xl border border-gray-200 bg-white p-4 mb-5">
+        <div className="rounded-xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 mb-5">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
             <div>
-              <label className="block text-gray-400 text-xs mb-1 uppercase tracking-wide">Desde</label>
+              <label className="block text-gray-400 dark:text-zinc-500 text-xs mb-1 uppercase tracking-wide">Desde</label>
               <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)}
-                className="w-full bg-gray-100 border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:border-orange-500" />
+                className="w-full bg-gray-100 dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 focus:outline-none focus:border-orange-500" />
             </div>
             <div>
-              <label className="block text-gray-400 text-xs mb-1 uppercase tracking-wide">Hasta</label>
+              <label className="block text-gray-400 dark:text-zinc-500 text-xs mb-1 uppercase tracking-wide">Hasta</label>
               <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)}
-                className="w-full bg-gray-100 border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:border-orange-500" />
+                className="w-full bg-gray-100 dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 focus:outline-none focus:border-orange-500" />
             </div>
             <div>
-              <label className="block text-gray-400 text-xs mb-1 uppercase tracking-wide">Estado</label>
+              <label className="block text-gray-400 dark:text-zinc-500 text-xs mb-1 uppercase tracking-wide">Estado</label>
               <select value={status} onChange={e => setStatus(e.target.value)}
-                className="w-full bg-gray-100 border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:border-orange-500">
+                className="w-full bg-gray-100 dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 focus:outline-none focus:border-orange-500">
                 <option value="">Todos</option>
                 <option value="pending">Pendiente</option>
                 <option value="confirmed">Confirmada</option>
@@ -186,9 +186,9 @@ export default function ReservationsClient({ userEmail }: { userEmail: string })
               </select>
             </div>
             <div>
-              <label className="block text-gray-400 text-xs mb-1 uppercase tracking-wide">Zona</label>
+              <label className="block text-gray-400 dark:text-zinc-500 text-xs mb-1 uppercase tracking-wide">Zona</label>
               <select value={zone} onChange={e => setZone(e.target.value)}
-                className="w-full bg-gray-100 border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:border-orange-500">
+                className="w-full bg-gray-100 dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 focus:outline-none focus:border-orange-500">
                 <option value="">Todas</option>
                 <option value="salon">Salón</option>
                 <option value="terraza">Terraza</option>
@@ -201,9 +201,9 @@ export default function ReservationsClient({ userEmail }: { userEmail: string })
               placeholder="Buscar por nombre o teléfono…"
               value={search}
               onChange={e => handleSearch(e.target.value)}
-              className="flex-1 bg-gray-100 border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:border-orange-500 placeholder-gray-400"
+              className="flex-1 bg-gray-100 dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 focus:outline-none focus:border-orange-500 placeholder-gray-400 dark:placeholder-zinc-600"
             />
-            <button onClick={clearFilters} className="px-3 py-2 rounded-lg border border-gray-300 text-gray-500 hover:text-gray-900 text-sm transition">
+            <button onClick={clearFilters} className="px-3 py-2 rounded-lg border border-gray-300 dark:border-zinc-600 text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white text-sm transition">
               Limpiar
             </button>
           </div>
@@ -211,45 +211,45 @@ export default function ReservationsClient({ userEmail }: { userEmail: string })
 
         {/* Table */}
         {loading ? (
-          <div className="rounded-xl border border-gray-200 bg-white p-12 text-center text-gray-400 text-sm">Cargando…</div>
+          <div className="rounded-xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-12 text-center text-gray-400 dark:text-zinc-500 text-sm">Cargando…</div>
         ) : pageRows.length === 0 ? (
-          <div className="rounded-xl border border-gray-200 bg-white p-12 text-center text-gray-400 text-sm">No hay reservas con estos filtros.</div>
+          <div className="rounded-xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-12 text-center text-gray-400 dark:text-zinc-500 text-sm">No hay reservas con estos filtros.</div>
         ) : (
-          <div className="rounded-xl border border-gray-200 overflow-hidden">
+          <div className="rounded-xl border border-gray-200 dark:border-zinc-800 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-gray-200 bg-gray-50">
-                    <th className="text-left px-4 py-3 text-gray-500 font-medium">Fecha / Hora</th>
-                    <th className="text-left px-4 py-3 text-gray-500 font-medium">Nombre</th>
-                    <th className="text-left px-4 py-3 text-gray-500 font-medium">Teléfono</th>
-                    <th className="text-left px-4 py-3 text-gray-500 font-medium">Pax</th>
-                    <th className="text-left px-4 py-3 text-gray-500 font-medium">Zona / Mesa</th>
-                    <th className="text-left px-4 py-3 text-gray-500 font-medium">Estado</th>
-                    <th className="text-left px-4 py-3 text-gray-500 font-medium">Notas</th>
-                    <th className="text-right px-4 py-3 text-gray-500 font-medium">Acciones</th>
+                  <tr className="border-b border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900">
+                    <th className="text-left px-4 py-3 text-gray-500 dark:text-zinc-400 font-medium">Fecha / Hora</th>
+                    <th className="text-left px-4 py-3 text-gray-500 dark:text-zinc-400 font-medium">Nombre</th>
+                    <th className="text-left px-4 py-3 text-gray-500 dark:text-zinc-400 font-medium">Teléfono</th>
+                    <th className="text-left px-4 py-3 text-gray-500 dark:text-zinc-400 font-medium">Pax</th>
+                    <th className="text-left px-4 py-3 text-gray-500 dark:text-zinc-400 font-medium">Zona / Mesa</th>
+                    <th className="text-left px-4 py-3 text-gray-500 dark:text-zinc-400 font-medium">Estado</th>
+                    <th className="text-left px-4 py-3 text-gray-500 dark:text-zinc-400 font-medium">Notas</th>
+                    <th className="text-right px-4 py-3 text-gray-500 dark:text-zinc-400 font-medium">Acciones</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200">
+                <tbody className="divide-y divide-gray-200 dark:divide-zinc-800">
                   {pageRows.map(r => (
-                    <tr key={r.id} className="hover:bg-gray-50 transition">
+                    <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-zinc-800/50 transition">
                       <td className="px-4 py-3">
-                        <div className="text-gray-600 text-xs">{formatDateCR(r.date)}</div>
-                        <div className="text-gray-400 text-xs font-mono">{formatTimeCR(r.time)}</div>
+                        <div className="text-gray-600 dark:text-zinc-400 text-xs">{formatDateCR(r.date)}</div>
+                        <div className="text-gray-400 dark:text-zinc-500 text-xs font-mono">{formatTimeCR(r.time)}</div>
                       </td>
-                      <td className="px-4 py-3 text-gray-900 font-medium">{r.name}</td>
-                      <td className="px-4 py-3 text-gray-500 text-xs font-mono">{r.phone || '—'}</td>
-                      <td className="px-4 py-3 text-gray-600 text-center">{r.party_size}</td>
+                      <td className="px-4 py-3 text-gray-900 dark:text-white font-medium">{r.name}</td>
+                      <td className="px-4 py-3 text-gray-500 dark:text-zinc-400 text-xs font-mono">{r.phone || '—'}</td>
+                      <td className="px-4 py-3 text-gray-600 dark:text-zinc-400 text-center">{r.party_size}</td>
                       <td className="px-4 py-3">
-                        <div className="text-gray-500 text-xs capitalize">{r.zone ?? '—'}</div>
-                        <div className="text-gray-400 text-xs font-mono">{(r.table_ids ?? []).join(', ') || '—'}</div>
+                        <div className="text-gray-500 dark:text-zinc-400 text-xs capitalize">{r.zone ?? '—'}</div>
+                        <div className="text-gray-400 dark:text-zinc-500 text-xs font-mono">{(r.table_ids ?? []).join(', ') || '—'}</div>
                       </td>
                       <td className="px-4 py-3">
                         <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium border ${STATUS_STYLES[r.status]}`}>
                           {STATUS_LABELS[r.status]}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-gray-400 text-xs italic max-w-[140px] truncate">
+                      <td className="px-4 py-3 text-gray-400 dark:text-zinc-500 text-xs italic max-w-[140px] truncate">
                         {r.notes || ''}
                       </td>
                       <td className="px-4 py-3">
@@ -267,7 +267,7 @@ export default function ReservationsClient({ userEmail }: { userEmail: string })
                             </button>
                           )}
                           <Link href={`/admin/new-reservation?id=${r.id}`}
-                            className="text-xs px-2 py-1 rounded-md border border-gray-300 text-gray-500 hover:text-gray-900 transition">
+                            className="text-xs px-2 py-1 rounded-md border border-gray-300 dark:border-zinc-600 text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white transition">
                             ✏
                           </Link>
                           <button onClick={() => deleteRow(r.id)} disabled={!!actionLoading}
@@ -288,20 +288,20 @@ export default function ReservationsClient({ userEmail }: { userEmail: string })
         {totalPages > 1 && (
           <div className="flex items-center justify-center gap-1.5 mt-4">
             <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
-              className="px-3 py-1.5 rounded-lg border border-gray-200 text-gray-500 text-sm disabled:opacity-40 hover:border-gray-300 transition">◀</button>
+              className="px-3 py-1.5 rounded-lg border border-gray-200 dark:border-zinc-700 text-gray-500 dark:text-zinc-400 text-sm disabled:opacity-40 hover:border-gray-300 transition">◀</button>
             {Array.from({ length: totalPages }, (_, i) => i + 1)
               .filter(n => n === 1 || n === totalPages || Math.abs(n - page) <= 2)
               .map((n, idx, arr) => (
                 <>
-                  {idx > 0 && arr[idx - 1] !== n - 1 && <span key={`gap-${n}`} className="text-gray-400 text-sm px-1">…</span>}
+                  {idx > 0 && arr[idx - 1] !== n - 1 && <span key={`gap-${n}`} className="text-gray-400 dark:text-zinc-500 text-sm px-1">…</span>}
                   <button key={n} onClick={() => setPage(n)}
-                    className={`px-3 py-1.5 rounded-lg border text-sm transition ${n === page ? 'border-orange-500/40 bg-orange-500/10 text-orange-400' : 'border-gray-200 text-gray-500 hover:border-gray-300'}`}>
+                    className={`px-3 py-1.5 rounded-lg border text-sm transition ${n === page ? 'border-orange-500/40 bg-orange-500/10 text-orange-400' : 'border-gray-200 dark:border-zinc-700 text-gray-500 dark:text-zinc-400 hover:border-gray-300'}`}>
                     {n}
                   </button>
                 </>
               ))}
             <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}
-              className="px-3 py-1.5 rounded-lg border border-gray-200 text-gray-500 text-sm disabled:opacity-40 hover:border-gray-300 transition">▶</button>
+              className="px-3 py-1.5 rounded-lg border border-gray-200 dark:border-zinc-700 text-gray-500 dark:text-zinc-400 text-sm disabled:opacity-40 hover:border-gray-300 transition">▶</button>
           </div>
         )}
       </main>

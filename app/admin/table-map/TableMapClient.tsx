@@ -59,11 +59,11 @@ function pickSlot(dateStr: string, nowMs: number): string {
 type TableStatus = 'free' | 'pending' | 'upcoming' | 'arriving' | 'overdue'
 
 const TABLE_STYLES: Record<TableStatus, string> = {
-  free:     'border-emerald-400/60 bg-emerald-50   text-emerald-700',
-  pending:  'border-amber-400/60   bg-amber-50     text-amber-700',
-  upcoming: 'border-sky-400/60     bg-sky-50       text-sky-700',
-  arriving: 'border-orange-500     bg-orange-50    text-orange-600',
-  overdue:  'border-red-400/70     bg-red-50       text-red-600',
+  free:     'border-emerald-400/60 bg-emerald-50   dark:bg-emerald-950/30  text-emerald-700 dark:text-emerald-400',
+  pending:  'border-amber-400/60   bg-amber-50     dark:bg-amber-950/30    text-amber-700   dark:text-amber-400',
+  upcoming: 'border-sky-400/60     bg-sky-50       dark:bg-sky-950/30      text-sky-700     dark:text-sky-400',
+  arriving: 'border-orange-500     bg-orange-50    dark:bg-orange-950/30   text-orange-600  dark:text-orange-400',
+  overdue:  'border-red-400/70     bg-red-50       dark:bg-red-950/30      text-red-600     dark:text-red-400',
 }
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
@@ -82,7 +82,7 @@ function SlotButton({
       className={`relative px-3 py-1.5 rounded-lg text-sm font-mono transition ${
         selected
           ? 'bg-orange-500 text-white shadow-md shadow-orange-500/20'
-          : 'bg-white border border-gray-300 text-gray-600 hover:text-gray-900 hover:border-gray-400'
+          : 'bg-white dark:bg-zinc-900 border border-gray-300 dark:border-zinc-700 text-gray-600 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-zinc-200 hover:border-gray-400 dark:hover:border-zinc-500'
       }`}
     >
       {slot}
@@ -268,26 +268,26 @@ export default function TableMapClient({ userEmail }: { userEmail: string }) {
 
   // ─── Render ────────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900">
+    <div className="min-h-screen bg-gray-50 dark:bg-zinc-950 text-gray-900 dark:text-white">
 
       {/* ── Header ──────────────────────────────────────────────────────────── */}
-      <header className="border-b border-gray-200 bg-white/95 backdrop-blur-sm sticky top-0 z-10 shadow-sm">
+      <header className="border-b border-gray-200 dark:border-zinc-800 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-sm sticky top-0 z-10 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-orange-50 border border-orange-200 flex items-center justify-center">
               <span className="text-orange-500 font-bold text-sm">N</span>
             </div>
-            <span className="text-gray-900 font-semibold text-sm">Nanku Admin</span>
+            <span className="text-gray-900 dark:text-white font-semibold text-sm">Nanku Admin</span>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-gray-400 text-sm hidden md:block">{userEmail}</span>
+            <span className="text-gray-400 dark:text-zinc-500 text-sm hidden md:block">{userEmail}</span>
             <button onClick={handleSignOut}
-              className="text-gray-500 hover:text-gray-900 text-sm transition px-3 py-1.5 rounded-lg hover:bg-gray-100">
+              className="text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white text-sm transition px-3 py-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800">
               Sign out
             </button>
           </div>
         </div>
-        <div className="border-t border-gray-200 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="border-t border-gray-200 dark:border-zinc-800 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AdminNav />
         </div>
       </header>
@@ -297,33 +297,33 @@ export default function TableMapClient({ userEmail }: { userEmail: string }) {
         {/* ── Title + date nav ──────────────────────────────────────────────── */}
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Mapa de Mesas</h1>
-            {!isToday && <p className="text-gray-400 text-sm mt-0.5">{formatDateCR(date)}</p>}
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Mapa de Mesas</h1>
+            {!isToday && <p className="text-gray-400 dark:text-zinc-500 text-sm mt-0.5">{formatDateCR(date)}</p>}
           </div>
           <div className="flex items-center gap-2">
             <button onClick={() => setDate(d => addDays(d, -1))}
-              className="p-2 rounded-lg border border-gray-200 bg-white text-gray-500 hover:text-gray-900 hover:border-gray-300 transition">
+              className="p-2 rounded-lg border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-zinc-200 hover:border-gray-300 transition">
               ◀
             </button>
             <button onClick={() => setDate(today)}
               className={`px-4 py-1.5 rounded-lg border text-sm transition ${
                 isToday
-                  ? 'border-orange-400/60 bg-orange-50 text-orange-600'
-                  : 'border-gray-200 bg-white text-gray-500 hover:border-gray-300 hover:text-gray-900'
+                  ? 'border-orange-400/60 bg-orange-50 dark:bg-orange-950/30 text-orange-600 dark:text-orange-400'
+                  : 'border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-gray-500 dark:text-zinc-400 hover:border-gray-300 hover:text-gray-900 dark:hover:text-zinc-200'
               }`}>
               Hoy
             </button>
             <button onClick={() => setDate(d => addDays(d, 1))}
-              className="p-2 rounded-lg border border-gray-200 bg-white text-gray-500 hover:text-gray-900 hover:border-gray-300 transition">
+              className="p-2 rounded-lg border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-zinc-200 hover:border-gray-300 transition">
               ▶
             </button>
           </div>
         </div>
 
         {/* ── Slot buttons ──────────────────────────────────────────────────── */}
-        <div className="rounded-xl border border-gray-200 bg-white p-4 mb-5 space-y-3 shadow-sm">
+        <div className="rounded-xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 mb-5 space-y-3 shadow-sm">
           <div>
-            <p className="text-gray-400 text-[11px] font-semibold uppercase tracking-widest mb-2">Almuerzo</p>
+            <p className="text-gray-400 dark:text-zinc-500 text-[11px] font-semibold uppercase tracking-widest mb-2">Almuerzo</p>
             <div className="flex flex-wrap gap-2">
               {LUNCH_SLOTS.map(s => (
                 <SlotButton key={s} slot={s} count={slotCounts[s] ?? 0}
@@ -332,7 +332,7 @@ export default function TableMapClient({ userEmail }: { userEmail: string }) {
             </div>
           </div>
           <div>
-            <p className="text-gray-400 text-[11px] font-semibold uppercase tracking-widest mb-2">Cena</p>
+            <p className="text-gray-400 dark:text-zinc-500 text-[11px] font-semibold uppercase tracking-widest mb-2">Cena</p>
             <div className="flex flex-wrap gap-2">
               {DINNER_SLOTS.map(s => (
                 <SlotButton key={s} slot={s} count={slotCounts[s] ?? 0}
@@ -343,7 +343,7 @@ export default function TableMapClient({ userEmail }: { userEmail: string }) {
         </div>
 
         {/* ── Legend ────────────────────────────────────────────────────────── */}
-        <div className="flex gap-4 flex-wrap text-xs text-gray-400 mb-5">
+        <div className="flex gap-4 flex-wrap text-xs text-gray-400 dark:text-zinc-500 mb-5">
           <LegendDot color="border-emerald-400 bg-emerald-50"  label="Libre" />
           <LegendDot color="border-amber-400   bg-amber-50"    label="Pendiente" />
           <LegendDot color="border-sky-400     bg-sky-50"      label="Confirmada" />
@@ -353,12 +353,12 @@ export default function TableMapClient({ userEmail }: { userEmail: string }) {
 
         {/* ── Table grids ───────────────────────────────────────────────────── */}
         {loading ? (
-          <div className="rounded-xl border border-gray-200 bg-white p-12 text-center text-gray-400 text-sm animate-pulse shadow-sm">
+          <div className="rounded-xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-12 text-center text-gray-400 dark:text-zinc-500 text-sm animate-pulse shadow-sm">
             Cargando mesas…
           </div>
         ) : (
           <>
-            <div className="rounded-xl border border-gray-200 bg-white p-5 mb-4 shadow-sm">
+            <div className="rounded-xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 mb-4 shadow-sm">
               <h2 className="text-orange-500 text-sm font-semibold uppercase tracking-wide mb-4">🌿 Salón</h2>
               <div className="grid grid-cols-4 sm:grid-cols-6 gap-3">
                 {SALON_TABLES.filter(t => !t.hidden).map(t => (
@@ -371,7 +371,7 @@ export default function TableMapClient({ userEmail }: { userEmail: string }) {
               </div>
             </div>
 
-            <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+            <div className="rounded-xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 shadow-sm">
               <h2 className="text-orange-500 text-sm font-semibold uppercase tracking-wide mb-4">🌤 Terraza</h2>
               <div className="grid grid-cols-4 sm:grid-cols-7 gap-3">
                 {TERRAZA_TABLES.map(t => (
@@ -391,15 +391,15 @@ export default function TableMapClient({ userEmail }: { userEmail: string }) {
       {modalTable && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4"
           onClick={() => setModalTable(null)}>
-          <div className="bg-white border border-gray-200 rounded-2xl w-full max-w-sm shadow-xl relative overflow-hidden"
+          <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 rounded-2xl w-full max-w-sm shadow-xl relative overflow-hidden"
             onClick={e => e.stopPropagation()}>
             <button onClick={() => setModalTable(null)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-lg leading-none">✕</button>
+              className="absolute top-4 right-4 text-gray-400 dark:text-zinc-500 hover:text-gray-700 dark:hover:text-zinc-200 text-lg leading-none">✕</button>
 
             {/* Table header */}
-            <div className="px-6 pt-5 pb-4 border-b border-gray-100">
-              <h3 className="text-gray-900 font-bold text-lg">Mesa {modalTable}</h3>
-              <p className="text-gray-400 text-sm mt-0.5">
+            <div className="px-6 pt-5 pb-4 border-b border-gray-100 dark:border-zinc-800">
+              <h3 className="text-gray-900 dark:text-white font-bold text-lg">Mesa {modalTable}</h3>
+              <p className="text-gray-400 dark:text-zinc-500 text-sm mt-0.5">
                 Turno {formatTimeCR(selectedSlot)} · {formatDateCR(date)}
               </p>
             </div>
@@ -409,12 +409,12 @@ export default function TableMapClient({ userEmail }: { userEmail: string }) {
               {modalReservations.length === 0 ? (
                 <div className="text-center py-4">
                   <div className="text-3xl mb-2">🟢</div>
-                  <p className="text-gray-500 text-sm font-medium">Mesa libre para este turno</p>
-                  <p className="text-gray-400 text-xs mt-1">No hay reservas asignadas</p>
+                  <p className="text-gray-500 dark:text-zinc-400 text-sm font-medium">Mesa libre para este turno</p>
+                  <p className="text-gray-400 dark:text-zinc-500 text-xs mt-1">No hay reservas asignadas</p>
                 </div>
               ) : (
                 <div className="space-y-3">
-                  <p className="text-gray-500 text-xs uppercase tracking-wide font-semibold">
+                  <p className="text-gray-500 dark:text-zinc-400 text-xs uppercase tracking-wide font-semibold">
                     Reservas · {selectedSlot}
                   </p>
                   {modalReservations.map(res => {
@@ -430,7 +430,7 @@ export default function TableMapClient({ userEmail }: { userEmail: string }) {
                           ? status === 'arriving'
                             ? 'border-orange-200 bg-orange-50'
                             : 'border-red-200 bg-red-50'
-                          : 'border-gray-100 bg-gray-50'
+                          : 'border-gray-100 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-800/50'
                       }`}>
                         {/* Arrival window */}
                         {inArrival && (
@@ -465,19 +465,19 @@ export default function TableMapClient({ userEmail }: { userEmail: string }) {
                         {/* Reservation details */}
                         <div className="space-y-1 text-sm">
                           <div className="flex justify-between">
-                            <span className="text-gray-500">Nombre</span>
-                            <span className="text-gray-900 font-medium">{res.name}</span>
+                            <span className="text-gray-500 dark:text-zinc-400">Nombre</span>
+                            <span className="text-gray-900 dark:text-white font-medium">{res.name}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-gray-500">Personas</span>
-                            <span className="text-gray-700">{res.party_size} pax</span>
+                            <span className="text-gray-500 dark:text-zinc-400">Personas</span>
+                            <span className="text-gray-700 dark:text-zinc-300">{res.party_size} pax</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-gray-500">Teléfono</span>
-                            <span className="text-gray-700 font-mono text-xs">{res.phone || '—'}</span>
+                            <span className="text-gray-500 dark:text-zinc-400">Teléfono</span>
+                            <span className="text-gray-700 dark:text-zinc-300 font-mono text-xs">{res.phone || '—'}</span>
                           </div>
                           <div className="flex justify-between items-center">
-                            <span className="text-gray-500">Estado</span>
+                            <span className="text-gray-500 dark:text-zinc-400">Estado</span>
                             <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium border ${STATUS_STYLES[res.status]}`}>
                               {STATUS_LABELS[res.status]}
                             </span>
@@ -485,7 +485,7 @@ export default function TableMapClient({ userEmail }: { userEmail: string }) {
                         </div>
 
                         {res.notes && (
-                          <p className="text-gray-400 text-xs italic border-t border-gray-200 pt-2 mt-2">{res.notes}</p>
+                          <p className="text-gray-400 dark:text-zinc-500 text-xs italic border-t border-gray-200 dark:border-zinc-700 pt-2 mt-2">{res.notes}</p>
                         )}
 
                         {/* Standard actions (non-arrival) */}
@@ -504,14 +504,14 @@ export default function TableMapClient({ userEmail }: { userEmail: string }) {
                               </button>
                             )}
                             <Link href={`/admin/new-reservation?id=${res.id}`}
-                              className="text-xs px-3 py-1.5 rounded-lg border border-gray-200 text-gray-500 hover:text-gray-800 hover:border-gray-300 transition">
+                              className="text-xs px-3 py-1.5 rounded-lg border border-gray-200 dark:border-zinc-700 text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-zinc-200 hover:border-gray-300 transition">
                               ✏
                             </Link>
                           </div>
                         )}
                         {inArrival && (
                           <Link href={`/admin/new-reservation?id=${res.id}`}
-                            className="mt-2 block text-center text-xs py-1.5 rounded-lg border border-gray-200 text-gray-400 hover:text-gray-700 transition">
+                            className="mt-2 block text-center text-xs py-1.5 rounded-lg border border-gray-200 dark:border-zinc-700 text-gray-400 dark:text-zinc-500 hover:text-gray-700 dark:hover:text-zinc-200 transition">
                             ✏ Editar reserva
                           </Link>
                         )}

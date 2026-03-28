@@ -1,3 +1,5 @@
+import AdminThemeProvider from './components/AdminThemeProvider'
+
 export const metadata = {
   title: {
     template: '%s | Nanku Admin',
@@ -10,5 +12,5 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode
 }) {
-  return <>{children}</>
+  return <AdminThemeProvider>{children}</AdminThemeProvider>
 }
