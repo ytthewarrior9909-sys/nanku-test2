@@ -7,6 +7,7 @@ import Gallery from '@/components/Gallery'
 import ReservationForm from '@/components/ReservationForm'
 import ReviewsScroll from '@/components/ReviewsScroll'
 import { createClient } from '@/lib/supabase/server'
+import LiveScheduleGrid from '@/components/LiveScheduleGrid'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -23,20 +24,11 @@ export const metadata: Metadata = {
   },
 }
 
-const DAY_LABEL_ES: Record<string, string> = {
-  Monday: 'LUN', Tuesday: 'MAR', Wednesday: 'MIÉ',
-  Thursday: 'JUE', Friday: 'VIE', Saturday: 'SÁB', Sunday: 'DOM',
-}
-const DAY_NAME_ES: Record<string, string> = {
-  Monday: 'Lunes', Tuesday: 'Martes', Wednesday: 'Miércoles',
-  Thursday: 'Jueves', Friday: 'Viernes', Saturday: 'Sábado', Sunday: 'Domingo',
-}
-
 type SchedDay = {
   id: string; day_of_week: string; is_active: boolean
   event_label: string; start_time: string; sort_order: number
-  event_detail?: string | null
-  artist?: { name: string; label: string } | null
+  event_detail: string | null
+  artist?: { name: string; label: string; photo?: string | null; bio?: string | null; bio_es?: string | null } | null
 }
 
 export default async function HomePageES() {
@@ -45,12 +37,10 @@ export default async function HomePageES() {
     const sb = createClient()
     const { data } = await sb
       .from('live_music_schedule')
-      .select('*, artist:artists(name, label)')
+      .select('*, artist:artists(name, label, photo, bio, bio_es)')
       .order('sort_order')
     schedule = data ?? []
   } catch { /* show static fallback below */ }
-
-  const liveDays = schedule.filter(d => d.is_active)
 
   return (
     <>
@@ -421,68 +411,24 @@ export default async function HomePageES() {
       </section>
 
       {/* LIVE MUSIC */}
-      <section id="music" className="music-section">
-        <div className="music-bg"></div>
-        <div className="container-sm">
-          <div className="music-header fade-up">
-            <div className="music-header-top">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="#E8751A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" /></svg>
-              <span className="section-label" style={{ margin: 0 }}>Sentí el Ritmo</span>
+      <section id="music" className="lm-schedule">
+        <div className="lm-schedule-glow"></div>
+        <div className="lm-schedule-container">
+          <div className="lm-schedule-header fade-up">
+            <div className="lm-schedule-label">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E8751A" strokeWidth="1.5">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
+              </svg>
+              <span className="section-label" style={{ margin: 0 }}>Música en Vivo</span>
             </div>
-            <h2 className="section-title">Noches de Música en Vivo</h2>
-            <div className="section-divider"></div>
-            <p className="music-header-desc">Artistas locales e internacionales se presentan en vivo en Nanku. Revisá el horario y reservá temprano — las noches de música se llenan rápido.</p>
+            <h2 className="lm-schedule-title">Cuándo Disfrutar Música en Vivo</h2>
+            <div className="divider-line" style={{ margin: '0 auto 1.25rem' }}></div>
           </div>
-
-          <div className="music-schedule fade-up">
-            {(schedule.length > 0 ? schedule : [
-              { id:'1', day_of_week:'Monday',    is_active:true,  event_label:'Banda en Vivo', start_time:'7:00 PM', sort_order:1, artist:null },
-              { id:'2', day_of_week:'Tuesday',   is_active:false, event_label:'Música Ambiental', start_time:'Toda la noche', sort_order:2, artist:null },
-              { id:'3', day_of_week:'Wednesday', is_active:false, event_label:'Sesiones Acústicas', start_time:'Toda la noche', sort_order:3, artist:null },
-              { id:'4', day_of_week:'Thursday',  is_active:false, event_label:'Música Ambiental', start_time:'Toda la noche', sort_order:4, artist:null },
-              { id:'5', day_of_week:'Friday',    is_active:false, event_label:'Noche de DJ', start_time:'Toda la noche', sort_order:5, artist:null },
-              { id:'6', day_of_week:'Saturday',  is_active:true,  event_label:'Banda en Vivo', start_time:'7:00 PM', sort_order:6, artist:null },
-              { id:'7', day_of_week:'Sunday',    is_active:false, event_label:'Ambiente Relajado', start_time:'Toda la noche', sort_order:7, artist:null },
-            ] as SchedDay[]).map((day) => (
-              <div key={day.id} className={`music-day ${day.is_active ? 'active' : 'inactive'}`}>
-                <span className="music-day-label">{DAY_LABEL_ES[day.day_of_week] ?? day.day_of_week.slice(0,3).toUpperCase()}</span>
-                <div className="music-day-icon">
-                  {day.is_active ? (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" /></svg>
-                  ) : (
-                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'rgba(255,255,255,0.2)' }}></div>
-                  )}
-                </div>
-                <span className="music-day-note">
-                  {day.is_active && day.artist ? day.artist.name : day.event_label}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          <div className="music-live-cards fade-up">
-            {(liveDays.length > 0 ? liveDays : [
-              { id:'1', day_of_week:'Monday',   is_active:true, event_label:'Banda en Vivo', start_time:'7:00 PM', sort_order:1, artist:null },
-              { id:'6', day_of_week:'Saturday', is_active:true, event_label:'Banda en Vivo', start_time:'7:00 PM', sort_order:6, artist:null },
-            ] as SchedDay[]).map((day) => (
-              <div key={day.id} className="music-live-card">
-                <div className="music-live-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" /></svg>
-                </div>
-                <div>
-                  <div className="music-live-title">Noche de {DAY_NAME_ES[day.day_of_week] ?? day.day_of_week}</div>
-                  <div className="music-live-subtitle">
-                    {day.artist ? day.artist.name : day.event_label}
-                    {day.event_detail ? ` — ${day.event_detail}` : ''} · Desde las {day.start_time}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="music-cta fade-up">
+          <LiveScheduleGrid schedule={schedule} lang="es" />
+          <p className="lm-schedule-note fade-up">El horario puede variar. Síguenos en Instagram para actualizaciones semanales.</p>
+          <div className="music-cta fade-up" style={{ marginTop: '2.5rem' }}>
             <a href="#reservations" className="btn-orange" style={{ display: 'inline-block' }}>Reservar para Noche Musical</a>
-            <a href="/es/live-music" className="btn-outline-orange" style={{ display: 'inline-flex' }}>Ver Página de Música en Vivo →</a>
+            <a href="/es/live-music" className="btn-outline-orange" style={{ display: 'inline-flex' }}>Página de Música en Vivo →</a>
           </div>
         </div>
       </section>
