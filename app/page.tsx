@@ -420,9 +420,7 @@ export default async function HomePage() {
                 </div>
                 <div className="map-hours">
                   <div className="map-hours-title">Hours</div>
-                  <div className="map-hours-row"><span className="map-hours-day">Monday – Thursday</span><span className="map-hours-time">12:00 PM – 11:00 PM</span></div>
-                  <div className="map-hours-row"><span className="map-hours-day">Friday – Saturday</span><span className="map-hours-time">12:00 PM – 1:00 AM</span></div>
-                  <div className="map-hours-row"><span className="map-hours-day">Sunday</span><span className="map-hours-time">12:00 PM – 10:00 PM</span></div>
+                  <div className="map-hours-row"><span className="map-hours-day">Monday – Sunday</span><span className="map-hours-time">12:00 PM – 10:00 PM</span></div>
                 </div>
                 <a href="https://maps.google.com/?q=Restaurante+Nanku+La+Fortuna+Costa+Rica" target="_blank" rel="noopener noreferrer" className="map-directions">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11" /></svg>

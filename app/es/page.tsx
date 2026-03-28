@@ -495,15 +495,7 @@ export default async function HomePageES() {
                 <div className="map-hours">
                   <div className="map-hours-title">Horario</div>
                   <div className="map-hours-row">
-                    <span className="map-hours-day">Lunes – Jueves</span>
-                    <span className="map-hours-time">12:00 PM – 11:00 PM</span>
-                  </div>
-                  <div className="map-hours-row">
-                    <span className="map-hours-day">Viernes – Sábado</span>
-                    <span className="map-hours-time">12:00 PM – 1:00 AM</span>
-                  </div>
-                  <div className="map-hours-row">
-                    <span className="map-hours-day">Domingo</span>
+                    <span className="map-hours-day">Lunes – Domingo</span>
                     <span className="map-hours-time">12:00 PM – 10:00 PM</span>
                   </div>
                 </div>
