@@ -35,6 +35,7 @@ const DAY_NAME_ES: Record<string, string> = {
 type SchedDay = {
   id: string; day_of_week: string; is_active: boolean
   event_label: string; start_time: string; sort_order: number
+  event_detail?: string | null
   artist?: { name: string; label: string } | null
 }
 
@@ -471,7 +472,8 @@ export default async function HomePageES() {
                 <div>
                   <div className="music-live-title">Noche de {DAY_NAME_ES[day.day_of_week] ?? day.day_of_week}</div>
                   <div className="music-live-subtitle">
-                    {day.artist ? day.artist.name : day.event_label} · Desde las {day.start_time}
+                    {day.artist ? day.artist.name : day.event_label}
+                    {day.event_detail ? ` — ${day.event_detail}` : ''} · Desde las {day.start_time}
                   </div>
                 </div>
               </div>

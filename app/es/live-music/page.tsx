@@ -6,6 +6,7 @@ import Footer from '@/components/Footer'
 import WhatsAppButton from '@/components/WhatsAppButton'
 import { createClient } from '@/lib/supabase/server'
 import ArtistsGrid from '@/components/ArtistsGrid'
+import LiveScheduleGrid from '@/components/LiveScheduleGrid'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -16,15 +17,10 @@ export const metadata: Metadata = {
     'Música en vivo cada lunes y sábado en Nanku Tropical Bar & Steakhouse en La Fortuna, Costa Rica. Artistas locales e internacionales desde las 7:00 PM.',
 }
 
-type ArtistRef = { name: string; label: string }
+type ArtistRef = { name: string; label: string; photo?: string | null; bio?: string | null; bio_es?: string | null }
 type ScheduleDay = { id: string; day_of_week: string; is_active: boolean; event_label: string; start_time: string; sort_order: number; artist_id: string | null; event_detail: string | null; artist?: ArtistRef | null }
 type WeeklyEvent  = { id: string; title: string; subtitle: string | null; image_url: string | null; cta_link: string | null; cta_text: string | null; is_active: boolean; sort_order: number }
 type ArtistRow    = { name: string; label: string; photo: string; bio: string; bio_es: string }
-
-const DAY_NAMES: Record<string, string> = {
-  Monday: 'Lunes', Tuesday: 'Martes', Wednesday: 'Miércoles',
-  Thursday: 'Jueves', Friday: 'Viernes', Saturday: 'Sábado', Sunday: 'Domingo',
-}
 
 const DEFAULT_SCHEDULE: ScheduleDay[] = [
   { id: '1', day_of_week: 'Monday',    is_active: true,  event_label: 'Banda en Vivo',        start_time: '7:00 PM',      sort_order: 1, artist_id: null, event_detail: null },
@@ -36,18 +32,6 @@ const DEFAULT_SCHEDULE: ScheduleDay[] = [
   { id: '7', day_of_week: 'Sunday',    is_active: false, event_label: 'Playlist tropical',    start_time: 'Toda la noche', sort_order: 7, artist_id: null, event_detail: null },
 ]
 
-function translateLabel(label: string): string {
-  if (label === 'Live Band') return 'Banda en Vivo'
-  if (label === 'Curated tropical playlist') return 'Playlist tropical'
-  if (label.toLowerCase().includes('all evening')) return 'Toda la noche'
-  return label
-}
-
-function translateTime(time: string): string {
-  if (time === 'All evening') return 'Toda la noche'
-  return time
-}
-
 export default async function LiveMusicPageES() {
   let schedule: ScheduleDay[] = DEFAULT_SCHEDULE
   let weeklyEvents: WeeklyEvent[] = []
@@ -56,7 +40,7 @@ export default async function LiveMusicPageES() {
   try {
     const supabase = createClient()
     const [{ data: schedData }, { data: eventsData }, { data: artistsData }] = await Promise.all([
-      supabase.from('live_music_schedule').select('*, artist:artists(name, label)').order('sort_order'),
+      supabase.from('live_music_schedule').select('*, artist:artists(name, label, photo, bio, bio_es)').order('sort_order'),
       supabase.from('weekly_events').select('*').eq('is_active', true).order('sort_order'),
       supabase.from('artists').select('name, label, photo, bio, bio_es').eq('is_active', true).order('sort_order'),
     ])
@@ -122,35 +106,7 @@ export default async function LiveMusicPageES() {
             <h2 className="lm-schedule-title">Cuándo Disfrutar Música en Vivo</h2>
             <div className="divider-line" style={{ margin: '0 auto 1.25rem' }}></div>
           </div>
-          <div className="lm-schedule-grid fade-up">
-            {schedule.map(d => (
-              <div key={d.day_of_week} className={`schedule-day${d.is_active ? ' live' : ''}`}>
-                {d.is_active && <span className="schedule-live-badge">EN VIVO</span>}
-                <span className={`schedule-day-name${d.is_active ? ' live' : ''}`}>{DAY_NAMES[d.day_of_week] ?? d.day_of_week}</span>
-                <div className={`schedule-icon${d.is_active ? ' live' : ''}`}>
-                  {d.is_active ? (
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5"><path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" /></svg>
-                  ) : (
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5"><path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" /></svg>
-                  )}
-                </div>
-                <div className="schedule-info">
-                  <p className={`schedule-event${d.is_active ? ' live' : ''}`}>
-                    {d.is_active && d.artist
-                      ? `${d.artist.name} | ${d.artist.label}`
-                      : translateLabel(d.event_label)}
-                  </p>
-                  {d.is_active && d.event_detail && (
-                    <p className="schedule-event-detail">{d.event_detail}</p>
-                  )}
-                  <div className={`schedule-time${d.is_active ? ' live' : ''}`}>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
-                    {translateTime(d.start_time)}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <LiveScheduleGrid schedule={schedule} lang="es" />
           <p className="lm-schedule-note fade-up">El horario puede variar. Síguenos en Instagram para actualizaciones semanales.</p>
         </div>
       </section>

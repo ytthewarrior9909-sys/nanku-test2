@@ -866,6 +866,134 @@ ul { list-style: none; }
   margin-top: 0.15rem;
   font-family: 'Lato', sans-serif;
 }
+.schedule-day--clickable {
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.schedule-day--clickable:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(232,117,26,0.22);
+}
+.schedule-tap-hint {
+  font-family: 'Lato', sans-serif;
+  font-size: 0.58rem;
+  color: rgba(232,117,26,0.45);
+  margin-top: 0.3rem;
+  letter-spacing: 0.03em;
+}
+/* ── Schedule Popup ── */
+.schedule-popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.72);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: spOverlayIn 0.2s ease;
+}
+@keyframes spOverlayIn { from { opacity: 0; } to { opacity: 1; } }
+.schedule-popup {
+  background: #181818;
+  border: 1px solid rgba(232,117,26,0.22);
+  border-radius: 1.25rem;
+  max-width: 420px;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: spSlideUp 0.25s cubic-bezier(0.22,1,0.36,1);
+}
+@keyframes spSlideUp { from { transform: translateY(24px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.schedule-popup-close {
+  position: absolute;
+  top: 0.875rem;
+  right: 0.875rem;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.7);
+  z-index: 2;
+  transition: background 0.15s;
+}
+.schedule-popup-close:hover { background: rgba(255,255,255,0.16); }
+.schedule-popup-photo {
+  width: 100%;
+  height: 210px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.schedule-popup-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+.schedule-popup-content {
+  padding: 1.4rem 1.5rem 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.schedule-popup-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.4rem;
+}
+.schedule-popup-dayname {
+  font-family: 'Lato', sans-serif;
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.04em;
+}
+.schedule-popup-artist {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.45rem;
+  color: #fff;
+  margin: 0;
+  line-height: 1.2;
+}
+.schedule-popup-genre {
+  font-family: 'Lato', sans-serif;
+  font-size: 0.82rem;
+  color: #E8751A;
+  margin: 0;
+}
+.schedule-popup-detail {
+  font-family: 'Lato', sans-serif;
+  font-size: 0.92rem;
+  color: #b0b0b0;
+  line-height: 1.65;
+  margin: 0.3rem 0 0.1rem;
+}
+.schedule-popup-time {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #E8751A;
+  margin-top: 0.4rem;
+}
+.schedule-popup-bio {
+  font-family: 'Lato', sans-serif;
+  font-size: 0.8rem;
+  color: #666;
+  line-height: 1.75;
+  margin-top: 0.75rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
 
 /* ============================================================
    MUSIC SECTION
