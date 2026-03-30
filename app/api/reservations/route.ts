@@ -19,10 +19,10 @@ export async function POST(request: NextRequest) {
     if (!date || typeof date !== 'string') {
       return NextResponse.json({ error: 'Reservation date is required.' }, { status: 400 })
     }
-    const reservationDate = new Date(date)
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    if (reservationDate < today) {
+    // Compare dates in Costa Rica time (UTC-6, no DST) to avoid UTC midnight mismatches
+    const crNowDate = new Date(Date.now() - 6 * 60 * 60 * 1000)
+    const crTodayDate = crNowDate.toISOString().split('T')[0]
+    if (date < crTodayDate) {
       return NextResponse.json({ error: 'Reservation date must be today or in the future.' }, { status: 400 })
     }
     if (!time || typeof time !== 'string') {
