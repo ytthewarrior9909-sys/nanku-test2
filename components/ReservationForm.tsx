@@ -39,9 +39,9 @@ const countryCodes = [
 ]
 
 const timeOptions = [
-  '12:00 PM', '1:00 PM', '2:00 PM',
-  '5:00 PM', '6:00 PM', '7:00 PM',
-  '8:00 PM', '9:00 PM', '10:00 PM',
+  '12:00 PM', '12:30 PM', '1:00 PM', '1:30 PM', '2:00 PM', '2:30 PM',
+  '5:00 PM', '5:30 PM', '6:00 PM', '6:30 PM', '7:00 PM', '7:30 PM',
+  '8:00 PM', '8:30 PM', '9:00 PM', '9:30 PM', '10:00 PM',
 ]
 
 const partySizes = ['1-2', '3-4', '5-6', '7-8', '9+']
@@ -86,15 +86,17 @@ function isSlotTooSoon(slot: string, selectedDate: string): boolean {
   const crHour = crNow.getUTCHours()
   const crMin  = crNow.getUTCMinutes()
 
-  // Parse "5:00 PM" → 24h hour
+  // Parse "5:30 PM" → total minutes in 24h
   const [timePart, ampm] = slot.split(' ')
-  let h = parseInt(timePart.split(':')[0])
+  const [hStr, mStr] = timePart.split(':')
+  let h = parseInt(hStr)
+  const m = parseInt(mStr) || 0
   if (ampm === 'PM' && h !== 12) h += 12
   if (ampm === 'AM' && h === 12) h = 0
 
   // Slot must start at least 60 minutes from now
-  const crTotalMin  = crHour * 60 + crMin
-  const slotTotalMin = h * 60
+  const crTotalMin   = crHour * 60 + crMin
+  const slotTotalMin = h * 60 + m
   return slotTotalMin < crTotalMin + 60
 }
 

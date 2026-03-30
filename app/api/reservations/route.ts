@@ -34,11 +34,13 @@ export async function POST(request: NextRequest) {
     const crTodayStr = crNow.toISOString().split('T')[0]
     if (date === crTodayStr) {
       const [timePart, ampm] = (time as string).split(' ')
-      let slotHour = parseInt(timePart.split(':')[0])
+      const [hStr, mStr] = timePart.split(':')
+      let slotHour = parseInt(hStr)
+      const slotMin = parseInt(mStr) || 0
       if (ampm === 'PM' && slotHour !== 12) slotHour += 12
       if (ampm === 'AM' && slotHour === 12) slotHour = 0
       const crTotalMin  = crNow.getUTCHours() * 60 + crNow.getUTCMinutes()
-      const slotTotalMin = slotHour * 60
+      const slotTotalMin = slotHour * 60 + slotMin
       if (slotTotalMin < crTotalMin + 60) {
         return NextResponse.json(
           { error: 'Reservations require at least 1 hour advance notice.' },
