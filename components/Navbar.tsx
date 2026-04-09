@@ -75,8 +75,8 @@ export default function Navbar({ lang = 'en', activePage }: NavbarProps) {
               <Image
                 src="https://assets.cdn.filesafe.space/ftiLAicHGn0i3cqS3Rye/media/69b8ed2f269d65a9c8c24a19.png"
                 alt="Nanku Logo"
-                width={150}
-                height={50}
+                width={120}
+                height={40}
                 priority
               />
             </Link>
