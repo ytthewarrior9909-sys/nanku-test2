@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -295,14 +296,10 @@ export default function MenuClient({ lang = 'en' }: { lang?: 'en' | 'es' }) {
   const [foodCat, setFoodCat] = useState<FoodCat>('appetizers')
   const [drinksCat, setDrinksCat] = useState<DrinksCat>('licores')
 
+  const searchParams = useSearchParams()
   useEffect(() => {
-    const syncPanel = () => {
-      setPanel(window.location.hash === '#drinks' ? 'drinks' : 'food')
-    }
-    syncPanel()
-    window.addEventListener('hashchange', syncPanel)
-    return () => window.removeEventListener('hashchange', syncPanel)
-  }, [])
+    setPanel(searchParams.get('tab') === 'drinks' ? 'drinks' : 'food')
+  }, [searchParams])
   const [modal, setModal] = useState<ModalState | null>(null)
 
   const d = lang === 'es' ? esFood : enFood
