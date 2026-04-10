@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -296,6 +296,12 @@ export default function MenuClient({ lang = 'en' }: { lang?: 'en' | 'es' }) {
   const [panel, setPanel] = useState<Panel>('food')
   const [foodCat, setFoodCat] = useState<FoodCat>('appetizers')
   const [drinksCat, setDrinksCat] = useState<DrinksCat>('licores')
+
+  useEffect(() => {
+    if (window.location.hash === '#drinks') {
+      setPanel('drinks')
+    }
+  }, [])
   const [modal, setModal] = useState<ModalState | null>(null)
 
   const d = lang === 'es' ? esFood : enFood
