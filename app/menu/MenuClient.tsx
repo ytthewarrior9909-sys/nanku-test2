@@ -43,7 +43,7 @@ const enFood = {
     { name: 'Passion Fruit Tuna Ceviche', price: '₡8,500', desc: 'Tuna marinated with passion fruit, soy and pepper oil served with mixed chips.', photo: CDN + '69c194d5eb06d8b53fe532fc.jpg' },
   ] as FoodItem[],
   seafood: [
-    { name: 'Teriyaki Tuna', price: '₡14,200', desc: 'Encrusted yellow-fin tuna with sesame seeds, served with vegetables, mashed potatoes, and teriyaki sauce.' },
+    { name: 'Teriyaki Tuna', price: '₡14,200', desc: 'Encrusted yellow-fin tuna with sesame seeds, served with vegetables, mashed potatoes, and teriyaki sauce.', photo: CDN + '69d85b05d7871cddf7ea19e0.webp' },
     { name: 'Grilled Octopus', price: '₡19,000', desc: 'Grilled octopus with sweet potato, salad, tomato chimichurri, and citrus concasse soy sauce.', photo: CDN + '69b9175087f0f2768356c731.jpg' },
     { name: 'Caribbean Soup', price: '₡8,000', desc: 'Mixed seafood in tomato sauce with coconut milk, thyme, and chili pepper.', photo: CDN + '69c5f6dc7794bf5d9b4fe34b.jpg' },
     { name: 'Trout With Creamy', price: '₡12,400', desc: 'Costa Rican trout in creamy sauce and shrimp served with artichoke rice and cherry tomato.', photo: CDN + '69c5f8665ebd49a0c4779e7f.jpg' },
@@ -125,7 +125,7 @@ const esFood = {
     { name: 'Ceviche de Atún con Maracuyá', price: '₡8,500', desc: 'Atún marinado con maracuyá, soya y aceite de pimienta, servido con chips mixtos.', photo: CDN + '69c194d5eb06d8b53fe532fc.jpg' },
   ] as FoodItem[],
   seafood: [
-    { name: 'Atún Teriyaki', price: '₡14,200', desc: 'Atún aleta amarilla encostrado en ajonjolí, servido con vegetales, puré de papas y salsa teriyaki.' },
+    { name: 'Atún Teriyaki', price: '₡14,200', desc: 'Atún aleta amarilla encostrado en ajonjolí, servido con vegetales, puré de papas y salsa teriyaki.', photo: CDN + '69d85b05d7871cddf7ea19e0.webp' },
     { name: 'Pulpo a la Parrilla', price: '₡19,000', desc: 'Pulpo a la parrilla con camote, ensalada, chimichurri de tomate y salsa cítrica de soya.', photo: CDN + '69b9175087f0f2768356c731.jpg' },
     { name: 'Sopa Caribeña', price: '₡8,000', desc: 'Mariscos mixtos en salsa de tomate con leche de coco, tomillo y chile.', photo: CDN + '69c5f6dc7794bf5d9b4fe34b.jpg' },
     { name: 'Trucha en Salsa Cremosa', price: '₡12,400', desc: 'Trucha costarricense en salsa cremosa con camarones, servida con arroz de alcachofas y tomates cherry.', photo: CDN + '69c5f8665ebd49a0c4779e7f.jpg' },
