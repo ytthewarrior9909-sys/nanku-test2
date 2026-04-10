@@ -296,9 +296,12 @@ export default function MenuClient({ lang = 'en' }: { lang?: 'en' | 'es' }) {
   const [drinksCat, setDrinksCat] = useState<DrinksCat>('licores')
 
   useEffect(() => {
-    if (window.location.hash === '#drinks') {
-      setPanel('drinks')
+    const syncPanel = () => {
+      setPanel(window.location.hash === '#drinks' ? 'drinks' : 'food')
     }
+    syncPanel()
+    window.addEventListener('hashchange', syncPanel)
+    return () => window.removeEventListener('hashchange', syncPanel)
   }, [])
   const [modal, setModal] = useState<ModalState | null>(null)
 
